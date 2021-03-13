@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>testing dinamic forms</title>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+
+</head>
+<body>
+<form id="empty-layer-uploader" method="post" enctype="multipart/form-data" action="">
+    <div id="form_empty_layer">
+        <input type="hidden" name="csrfmiddlewaretoken" value="{{ csrf_token }}">
+        {{ form.errors }}
+        {{ form.non_field_errors }}
+        {% if errormsgs %}
+        {% for value in errormsgs %}
+        </p>  {{ value }} </p>
+        {% endfor %}
+        {% endif %}
+        {% for error in form_empty_layer.non_field_errors %}
+        {{ error }} </br>
+        {% endfor %}
+        </br>
+        <p>main herere</p>
+        {% for field in form %}
+        {{ field }} </br>
+        {% endfor %}
+        <p>main ends herere</p>
+    </div>
+    </br>
+    <button type="button" id="add-another">add another</button>
+    </br> </br>
+    <button type="submit" id="empty-layer-button" name="emptylayerbtn">Upload</button>
+    </br></br>
+    <!--// used in order to save the number of added fields (this number will pass to forms.py through the view)-->
+    <!-- <input type="text" name="total_input_fields"/> -->
+</form>
+
+<script>
+    // check how many times elements with this name attribute exist: extra_field_*
+form_count = $('input[name*="extra_field_*"]').length;
+console.log('forms till now');
+console.log(form_count);
+
+// when the button 'add another' is clicked then create a new input element
+$(document.body).on("click", "#add-another",function(e) {
+  new_attribute = $('<input type="text"/>');
+  // add a name attribute with a corresponding number (form_count)
+  new_attribute.attr('name', 'extra_field_' + form_count);
+  // append the new element in your html
+  $("#form_empty_layer").append(new_attribute);
+  // increment the form_count variable
+  form_count ++;
+  // save the form_count to another input element (you can set this to invisible. This is what you will pass to the form in order to create the django form fields
+  $("[name=total_input_fields]").val(form_count);
+
+})
+
+
+</script>
+</body>
+
+</html>

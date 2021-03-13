@@ -1,0 +1,14 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+</head>
+<body>
+<ul>
+    {%for quiz in quizzes%}
+    <li>{{quiz.title|slugify}} - <a href="{% url 'quizz' quiz.title|slugify %}">{{quiz.title|slugify}}</a></li>
+    {%endfor%}
+</ul>
+</body>
+</html>

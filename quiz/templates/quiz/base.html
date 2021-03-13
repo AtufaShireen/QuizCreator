@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <title>base File</title>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+</head>
+
+<body>
+    <form method="POST" action="">
+        {%if title%}
+        <p>Title: <input type="text" name="title" value="{{title}}" disabled></p>
+        {%else%}
+        <p>Title: <input type="text" name="title" required autofocus></p>
+        {%endif%}
+        {%csrf_token%}
+        {{form.management_form}}
+        <div id="form_set">
+            {% for f in form.forms %}
+                {{f.non_field_errors}}
+                {{f.errors}}
+                <table class='no_error'>
+                    {{ f.as_p }}
+                </table>
+            {% endfor %}
+        </div>
+        <input type="button" value="Add More" id="add_more">
+        <div id="empty_form" style="display:none">
+            <table class='no_error'>
+                {{ form.empty_form }}
+            </table>
+        </div>
+            <button type="submit">Submit</button>
+            
+        </div>
+    </form>
+    <script>
+        $('#add_more').click(function () {
+            console.log('over here  form_idx');
+            var form_idx = $('#id_questions_set-TOTAL_FORMS').val();
+            $('#form_set').append($('#empty_form').html().replace(/__prefix__/g, form_idx));
+            $('#id_questions_set-TOTAL_FORMS').val(parseInt(form_idx) + 1);
+            console.log('form_idx');
+            console.log(form_idx);
+        });
+
+    </script>
+</body>
+
+</html>

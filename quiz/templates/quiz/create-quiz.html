@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Quiz</title>
+</head>
+<body>
+<form method="POST" action="">
+    <div id="form_set">
+        {%csrf_token%}
+        <p>Management Quiz Form</p>
+        {{ quiz_formset.management_form }}
+        <p>Quiz Form Errors</p>
+        {{ quiz_formset.non_form_errors }}
+
+        {% for quiz_form in quiz_formset.forms %}
+        <p>Quiz Form</p>
+        {{ quiz_form }}
+
+        {% if quiz_form.nested %}
+        <p>Nested Management Quiz Form</p>
+        {{ quiz_form.nested.management_form }}
+        <p>Nested Quiz Form Errors</p>
+        {{ quiz_form.nested.non_form_errors }}
+
+        {% for nested_form in quiz_form.nested.forms %}
+        <p>Nested Quiz Form</p>
+        {{ nested_form }}
+        {% endfor %}
+
+        {% endif %}
+
+        {% endfor %}
+    </div>
+    <input type="button" value="Add More" id="add_more">
+    <button type="submit">Submit ME FOr Erorrordfldkjf</button>
+</form>
+
+
+</body>
+<script>
+    $('#add_more').click(function() {
+	var form_idx = $('#id_form-TOTAL_FORMS').val();
+	$('#form_set').append($('#empty_form').html().replace(/__prefix__/g, form_idx));
+	$('#id_form-TOTAL_FORMS').val(parseInt(form_idx) + 1);
+});
+
+
+
+</script>
+</html>
