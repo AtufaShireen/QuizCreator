@@ -1,4 +1,4 @@
-from django.forms.models import inlineformset_factory #  BaseInlineFormSet,
+# from django.forms.models import inlineformset_factory #  BaseInlineFormSet,
 from . import models
 # from django.utils.translation import ugettext_lazy as _
 
@@ -116,5 +116,5 @@ from . import models
 #                             'about the book and choose the image file(s) again.'))
 
 
-QuestionsFormset = inlineformset_factory(models.Quizzer, models.Questions,exclude=['quizz','slug'])
+# QuestionsFormset = inlineformset_factory(models.Quizzer, models.Questions,exclude=['quizz','slug'])
 # AnswersFormset = inlineformset_factory(models.Questions, models.Answer, fields=['option', 'coorect'], extra=1)

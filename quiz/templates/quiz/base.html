@@ -9,15 +9,12 @@
 
 <body>
     <form method="POST" action="">
-        {%if title%}
-        <p>Title: <input type="text" name="title" value="{{title}}" disabled></p>
-        {%else%}
-        <p>Title: <input type="text" name="title" required autofocus></p>
-        {%endif%}
+        
         {%csrf_token%}
-        {{form.management_form}}
+        {{quiz_form.as_p}}
+        {{quest_form.management_form}}
         <div id="form_set">
-            {% for f in form.forms %}
+            {% for f in quest_form.forms %}
                 {{f.non_field_errors}}
                 {{f.errors}}
                 <table class='no_error'>
@@ -28,7 +25,7 @@
         <input type="button" value="Add More" id="add_more">
         <div id="empty_form" style="display:none">
             <table class='no_error'>
-                {{ form.empty_form }}
+                {{ quest_form.empty_form }}
             </table>
         </div>
             <button type="submit">Submit</button>

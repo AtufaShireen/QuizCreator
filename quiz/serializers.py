@@ -2,21 +2,17 @@ from rest_framework import serializers
 from .models import Quizzer, Questions
 
 
-
 class QuestionSerializer(serializers.ModelSerializer):
-    quiz_title = serializers.CharField(source='quizz.title', read_only=True)
-
     class Meta:
         model = Questions
-        fields = ['quiz_title','question','option_1','option_2','option_3','option_4','answer']
+        fields = ['question','option_1','option_2','option_3','option_4','answer']
 
 
 class QuizzerSerializer(serializers.ModelSerializer):
-    n_questions = serializers.SerializerMethodField(method_name='all_questions')
-
+  
+    n_questions = serializers.CharField(source='question_count', read_only=True)
+    tags=serializers.CharField(source='all_tags', read_only=True)
     class Meta:
         model = Quizzer
-        fields = ['id','title','n_questions'] # 
-
-    def all_questions(self, instance):
-        return instance.quizz_question.count()
+        fields = ['id','title','n_questions','tags'] # 
+        depth=1
