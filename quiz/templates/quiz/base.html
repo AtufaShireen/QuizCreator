@@ -35,9 +35,9 @@
     <script>
         $('#add_more').click(function () {
             console.log('over here  form_idx');
-            var form_idx = $('#id_questions_set-TOTAL_FORMS').val();
+            var form_idx = $('#id_quizz_question-TOTAL_FORMS').val();
             $('#form_set').append($('#empty_form').html().replace(/__prefix__/g, form_idx));
-            $('#id_questions_set-TOTAL_FORMS').val(parseInt(form_idx) + 1);
+            $('#id_quizz_question-TOTAL_FORMS').val(parseInt(form_idx) + 1);
             console.log('form_idx');
             console.log(form_idx);
         });

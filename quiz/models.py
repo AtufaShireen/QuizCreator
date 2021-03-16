@@ -15,10 +15,9 @@ class Quizzer(models.Model):
 
     @property
     def all_question(self):
-        return self.questions_set.all()
+        return self.quizz_question.all()
     @property
     def all_tags(self):
-        print('------------------this was called!',self.tags.all())
         return [i.name for i in self.tags.all()]
 
     @property
@@ -26,8 +25,9 @@ class Quizzer(models.Model):
         return self.quizz_question.count()
 
     def save(self, *args, **kwargs):
-        if not self.id:
-            self.slug = slugify(self.title)
+        # if not self.id: commented for updating titles...
+        #     self.slug = slugify(self.title)
+        self.slug = slugify(self.title)
 
         super(Quizzer, self).save(*args, **kwargs)
 
