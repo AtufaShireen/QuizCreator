@@ -1,5 +1,6 @@
 from django.db import models
 from django.contrib.auth.models import User
+from PIL import Image
 from django.template.defaultfilters import slugify
 from django.core.validators import MaxValueValidator, MinValueValidator
 from taggit.managers import TaggableManager
@@ -8,6 +9,7 @@ class Quizzer(models.Model):
     user = models.ForeignKey(User, on_delete=models.CASCADE,related_name='user_quiz')
     title = models.CharField(max_length=250, null=False)
     slug = models.SlugField(null=True, blank=True)
+    bg_pic = models.ImageField(default='media/def.png', upload_to='quiz_pic')
     tags=TaggableManager()
 
     def __str__(self):
@@ -25,11 +27,18 @@ class Quizzer(models.Model):
         return self.quizz_question.count()
 
     def save(self, *args, **kwargs):
-        # if not self.id: commented for updating titles...
-        #     self.slug = slugify(self.title)
         self.slug = slugify(self.title)
-
         super(Quizzer, self).save(*args, **kwargs)
+        # pat=self.bg_pic.path
+        # img = Image.open(pat)
+        # if img.mode in ("RGBA", "P"): img = img.convert("RGB")
+        # if img.height > 300 or img.width > 300:
+        #     output_size = (200, 200)
+        #     img.thumbnail(output_size)
+        #     img.save(pat)
+
+        
+        
 
 
 class Questions(models.Model):
@@ -46,7 +55,6 @@ class Questions(models.Model):
         return f'{self.question}'
 
     def save(self, *args, **kwargs):
-        if not self.id:
-            self.slug = slugify(self.question)
+        self.slug = slugify(self.question)
 
         super(Questions, self).save(*args, **kwargs)

@@ -39,6 +39,7 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'taggit',
+    'django_cleanup',
 ]
 
 MIDDLEWARE = [
@@ -120,4 +121,6 @@ USE_TZ = True
 # https://docs.djangoproject.com/en/3.1/howto/static-files/
 
 STATIC_URL = '/static/'
+MEDIA_ROOT = str(BASE_DIR/ 'media')  # create folder
+MEDIA_URL = '/media/'
 TAGGIT_CASE_INSENSITIVE = True

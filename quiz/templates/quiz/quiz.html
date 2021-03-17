@@ -8,11 +8,14 @@
 <h1> Quiz title - {{object.title}} {{object.id}}</h1>
 <ul>Questions
     {%for i in object.all_question%}
-    <li>{{i}}
+    <li>{{i.question}}
         <ul>
             
 
             <li>j ->{{i.option_1}}</li>
+            <li>j ->{{i.option_2}}</li>
+            <li>j ->{{i.option_3}}</li>
+            <li>j ->{{i.option_4}}</li>
        
         </ul>
     </li>

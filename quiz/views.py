@@ -11,19 +11,22 @@ from .filters import QuizFilter
 
 
 def create_quiz_form(request):
-    ques_fromset=QuestionsFormset(request.POST or None)
-    quiz_form=QuizForm(request.POST or None)
-    if request.method=='POST' and ques_fromset.is_valid() and quiz_form.is_valid():
-        quiz_instance=quiz_form.save(commit=False)
-        quiz_instance.user=request.user
-        quiz_instance.save()
-        quiz_form.save_m2m()
-        instance = ques_fromset.save(commit=False)
-        for i in instance:  
-            i.quizz=quiz_instance        
-        for i in instance:
-            i.save()
-        return redirect('/quizzes/')
+    
+    if request.method=='POST':
+        ques_fromset=QuestionsFormset(request.POST)
+        quiz_form=QuizForm(request.POST,request.FILES)
+        if ques_fromset.is_valid() and quiz_form.is_valid():
+            quiz_instance=quiz_form.save(commit=False)
+            print('---atleast not reached her eright?')
+            quiz_instance.save()
+            quiz_form.save_m2m()
+            instance = ques_fromset.save(commit=False)
+            for i in instance:  
+
+                i.quizz=quiz_instance        
+            for i in instance:
+                i.save()
+            return redirect('/quizzes/')
     else:
         ques_fromset = QuestionsFormset()
         quiz_form=QuizForm()
@@ -32,19 +35,25 @@ def create_quiz_form(request):
 
 def update_quiz_form(request, quizzer_id):
     inst=get_object_or_404(Quizzer,id=quizzer_id)
-    quiz_form=QuizForm(request.POST or None,instance=inst)
-    ques_fromset=QuestionsFormset(request.POST or None,instance=inst)
-    
-    if request.method=='POST' and ques_fromset.is_valid():
-        quiz_instance=quiz_form.save(commit=False)
-        quiz_instance.save()
-        quiz_form.save_m2m()
-        instance = ques_fromset.save(commit=False)
-        for i in instance:  
-            i.quizz=quiz_instance        
-        for i in instance:
-            i.save()
-        return redirect('/quizzes/')
+    if request.method=='POST':
+        
+        quiz_form=QuizForm(request.POST,request.FILES,instance=inst)
+        ques_fromset=QuestionsFormset(request.POST,instance=inst)
+        print('atleas i am here-------',ques_fromset.errors,quiz_form.is_valid())
+        if ques_fromset.is_valid() and quiz_form.is_valid():
+            
+            quiz_instance=quiz_form.save(commit=False)
+            quiz_instance.user=request.user
+            quiz_instance.save()
+            quiz_form.save_m2m()
+            print('right over here-----------')
+            instance = ques_fromset.save(commit=False)
+            for i in instance:  
+                i.quizz=quiz_instance        
+            for i in instance:
+                print('----and herer')
+                i.save()
+            return redirect('/quizzes/')
     else:
         ques_fromset = QuestionsFormset(instance=inst)
         quiz_form=QuizForm(instance=inst)

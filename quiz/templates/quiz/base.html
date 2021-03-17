@@ -14,10 +14,13 @@
         {{quiz_form.as_p}}
         {{quest_form.management_form}}
         <div id="form_set">
+            
             {% for f in quest_form.forms %}
+            <td class="hidden">{{ f.id }}</td>
                 {{f.non_field_errors}}
                 {{f.errors}}
                 <table class='no_error'>
+                 
                     {{ f.as_p }}
                 </table>
             {% endfor %}
@@ -26,6 +29,7 @@
         <div id="empty_form" style="display:none">
             <table class='no_error'>
                 {{ quest_form.empty_form }}
+               
             </table>
         </div>
             <button type="submit">Submit</button>

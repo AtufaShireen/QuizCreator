@@ -129,7 +129,7 @@
                     {%for quiz in filter.qs%}   <!--quizzes -->
                     <div class="col-md-4 col-sm-4 text-center card-view">
                         <a href="{% url 'quizz' quiz.title|slugify %}"><img
-                                src="https://i.ibb.co/L11MdKm/wallpaperflare-com-wallpaper.jpg" alt="{{quiz.title}}"
+                                src="{{quiz.bg_pic.url}}" alt="{{quiz.title}}"
                                 border="0"><br>{{quiz.title}}</a>
                     </div>
                     {%endfor%}

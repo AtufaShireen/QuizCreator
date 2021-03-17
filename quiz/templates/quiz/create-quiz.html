@@ -45,15 +45,18 @@
         <div class="row spacer"></div>
         <div class="row offset-2">
             <div class="col-12">
-                <form class="form-horizontal" method="POST" action="">
+                <form class="form-horizontal" method="POST" action="" enctype="multipart/form-data">
                     {% csrf_token %}
                     <div class="row spacer">
                         <div class="col-2">
+                            {{quiz_form.non_field_errors}}
+                                {{quiz_form.errors}}
                             <label>{{quiz_form.title.label}}</label>
                         </div>
                         <div class="col-4">
                             <div class="input-group">
                                 {{quiz_form.title}}
+                                
                             </div>
                         </div>
                     </div>
@@ -64,6 +67,16 @@
                         <div class="col-4">
                             <div class="input-group">
                                 {{quiz_form.tags}}
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row spacer">
+                        <div class="col-2">
+                            <label>{{quiz_form.bg_pic.label}}</label>
+                        </div>
+                        <div class="col-4">
+                            <div class="input-group">
+                                {{quiz_form.bg_pic}}
                             </div>
                         </div>
                     </div>
@@ -79,6 +92,9 @@
                     <div class="form-row">
 
                         <div class="col-2">
+                            {{form.non_field_errors}}
+                                {{form.errors}}
+                                {{form.id}}
                             <label>{{form.question.label}} {{forloop.counter}}</label>
                         </div>
                         <div class="col-8">
