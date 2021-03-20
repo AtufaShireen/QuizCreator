@@ -7,7 +7,7 @@
     <!-- Bootstrap CSS -->
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.1.1/css/bootstrap.min.css"
         integrity="sha384-WskhaSGFgHYWDcbwN70/dfYBj47jz9qbsMId/iRN3ewGhXQFZCSftd1LZCfmhktB" crossorigin="anonymous">
-<title>QuizzMaster</title>
+    <title>QuizzMaster</title>
     <style>
         h2 {
             margin-bottom: 30px;
@@ -113,7 +113,18 @@
             width: 100%;
         }
     </style>
-    <div class="space"></div>
+    </head>
+  
+    <div class="space">
+        {% for message in messages %}
+    <div class="alert alert-success alert-dismissible text-center" role="alert">
+      <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+        <span aria-hidden="true">&times;</span>
+      </button>
+      {{ message }}
+    </div>
+  {% endfor %}
+    </div>
 
     <section style="margin-bottom: 50px;">
         <div class="container">
@@ -123,14 +134,14 @@
                 <form method="get" action=".">
                     {{filter.form}}
                     <button type="submit">Search</button>
-                  </form>
+                </form>
                 <div class="row">
 
-                    {%for quiz in filter.qs%}   <!--quizzes -->
+                    {%for quizie in filter.qs%}
+                    <!--quizzes -->
                     <div class="col-md-4 col-sm-4 text-center card-view">
-                        <a href="{% url 'quizz' quiz.title|slugify %}"><img
-                                src="{{quiz.bg_pic.url}}" alt="{{quiz.title}}"
-                                border="0"><br>{{quiz.title}}</a>
+                        <a href="{% url 'quiz:quizz' quizie.title|slugify %}"><img src="{{quizie.bg_pic.url}}"
+                                alt="{{quizie.title}}" border="0"><br>{{quizie.title}}</a>
                     </div>
                     {%endfor%}
                 </div>

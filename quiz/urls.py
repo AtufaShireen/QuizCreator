@@ -1,11 +1,11 @@
 from django.urls import path, include
-from .views import QuizzView, Quizzes,create_quiz_form,update_quiz_form,QuizzApiView,QuizzesApiView #QuizzesView,QuizCreateView,
-
+from .views import QuizzView, Quizzes,quiz_form,QuizzApiView,QuizzesApiView #QuizzesView,QuizCreateView,
+app_name='quiz'
 urlpatterns = [
-    path('quiz/add/',create_quiz_form, name='create-quiz'),
-    path('quiz/edit/<int:quizzer_id>/', update_quiz_form, name='update-quiz'),
+    path('quiz/add/',quiz_form, name='create-quiz'),
+    path('quiz/edit/<int:quizzer_id>/', quiz_form, name='update-quiz'),
     path('quizzes/', Quizzes, name='quizzes'),
-    path('quiz/<str:slug>/', QuizzView.as_view(), name='quizz'),
+    path('quiz/<str:slug>/', QuizzView, name='quizz'),
     path('api-auth/',include('rest_framework.urls')),
     path('api-auth/quizzes/', QuizzesApiView.as_view(), name='api-quizzes'),
     path('api-auth/quiz/<str:slug>/', QuizzApiView.as_view(), name='api-quizz'),

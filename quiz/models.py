@@ -9,7 +9,7 @@ class Quizzer(models.Model):
     user = models.ForeignKey(User, on_delete=models.CASCADE,related_name='user_quiz')
     title = models.CharField(max_length=250, null=False)
     slug = models.SlugField(null=True, blank=True)
-    bg_pic = models.ImageField(default='media/def.png', upload_to='quiz_pic')
+    bg_pic = models.ImageField(default='def.png', upload_to='quiz_pic')
     tags=TaggableManager()
 
     def __str__(self):
@@ -29,17 +29,6 @@ class Quizzer(models.Model):
     def save(self, *args, **kwargs):
         self.slug = slugify(self.title)
         super(Quizzer, self).save(*args, **kwargs)
-        # pat=self.bg_pic.path
-        # img = Image.open(pat)
-        # if img.mode in ("RGBA", "P"): img = img.convert("RGB")
-        # if img.height > 300 or img.width > 300:
-        #     output_size = (200, 200)
-        #     img.thumbnail(output_size)
-        #     img.save(pat)
-
-        
-        
-
 
 class Questions(models.Model):
     quizz = models.ForeignKey('Quizzer',on_delete=models.CASCADE,related_name='quizz_question')
@@ -58,3 +47,8 @@ class Questions(models.Model):
         self.slug = slugify(self.question)
 
         super(Questions, self).save(*args, **kwargs)
+
+class QuizScore(models.Model):
+    user=models.ForeignKey(User, on_delete=models.CASCADE)
+    quiz=models.ForeignKey(Quizzer, on_delete=models.CASCADE)
+    score=models.IntegerField(default=0)

@@ -1,72 +1,54 @@
-from django.shortcuts import render, HttpResponseRedirect, redirect
+from django.shortcuts import render, HttpResponseRedirect, redirect,HttpResponse
 from django.views.generic import ListView, CreateView, DeleteView, DetailView, UpdateView
-from .models import Questions, Quizzer
+from .models import Questions, Quizzer,QuizScore
 from .serializers import QuizzerSerializer, QuestionSerializer
 from rest_framework.generics import ListAPIView
 from rest_framework.views import APIView, Response
-
+from django.contrib import messages
 from django.shortcuts import get_object_or_404
 from .forms import QuestionsFormset,QuizForm
 from .filters import QuizFilter
 
-
-def create_quiz_form(request):
-    
-    if request.method=='POST':
-        ques_fromset=QuestionsFormset(request.POST)
-        quiz_form=QuizForm(request.POST,request.FILES)
-        if ques_fromset.is_valid() and quiz_form.is_valid():
-            quiz_instance=quiz_form.save(commit=False)
-            print('---atleast not reached her eright?')
-            quiz_instance.save()
-            quiz_form.save_m2m()
-            instance = ques_fromset.save(commit=False)
-            for i in instance:  
-
-                i.quizz=quiz_instance        
-            for i in instance:
-                i.save()
-            return redirect('/quizzes/')
-    else:
-        ques_fromset = QuestionsFormset()
-        quiz_form=QuizForm()
-
-    return render(request, 'quiz/create-quiz.html', {'quest_form': ques_fromset,'quiz_form':quiz_form})
-
-def update_quiz_form(request, quizzer_id):
-    inst=get_object_or_404(Quizzer,id=quizzer_id)
-    if request.method=='POST':
+def quiz_form(request, quizzer_id=None):
+    try:
+        inst=Quizzer.objects.get(id=quizzer_id)
+    except Quizzer.DoesNotExist:
+        inst=None
         
-        quiz_form=QuizForm(request.POST,request.FILES,instance=inst)
-        ques_fromset=QuestionsFormset(request.POST,instance=inst)
-        print('atleas i am here-------',ques_fromset.errors,quiz_form.is_valid())
-        if ques_fromset.is_valid() and quiz_form.is_valid():
-            
-            quiz_instance=quiz_form.save(commit=False)
-            quiz_instance.user=request.user
-            quiz_instance.save()
-            quiz_form.save_m2m()
-            print('right over here-----------')
-            instance = ques_fromset.save(commit=False)
-            for i in instance:  
-                i.quizz=quiz_instance        
-            for i in instance:
-                print('----and herer')
-                i.save()
-            return redirect('/quizzes/')
-    else:
-        ques_fromset = QuestionsFormset(instance=inst)
-        quiz_form=QuizForm(instance=inst)
-
+    quiz_form=QuizForm(request.POST or None,request.FILES or None,instance=inst)
+    ques_fromset=QuestionsFormset(request.POST or None,instance=inst)
+    if ques_fromset.is_valid() and quiz_form.is_valid():
+        quiz_instance=quiz_form.save(commit=False)
+        quiz_instance.user=request.user
+        quiz_instance.save()
+        quiz_form.save_m2m()
+        instance = ques_fromset.save(commit=False)
+        for i in instance:  
+            i.quizz=quiz_instance        
+        for i in instance:
+            i.save()
+        return redirect('/quizzes/')
+  
     return render(request, 'quiz/create-quiz.html', {'quest_form': ques_fromset,'quiz_form':quiz_form})
 
-class QuizzView(DetailView):
-    model = Quizzer
-    fields = '__all__'
-    template_name = 'quiz/quiz.html'
+def QuizzView(request,slug):
+    quiz=Quizzer.objects.get(slug=slug)
+    questions=quiz.all_question
+    context={'quiz':quiz,'questions':questions}
+    if request.method=='POST':
+        counter=0
+        for i in questions:
+            if i.answer==int(request.POST[i.question]):
+                counter+=1
+            else:
+                print('actual answer was',i.answer,'selected answer was',request.POST[i.question]) 
+        add_score=QuizScore(user=request.user,quiz=quiz,score=counter)
+        messages.success(request, f'Your Score was {counter}')
+        return redirect('quiz:quizzes')
+    return render(request,'quiz/quiz.html',context=context)
 
-
-
+def ResultPage(requests,score):
+    return HttpResponse(f'Your Score Was..{score}')
 def Quizzes(request):
     query=Quizzer.objects.all()
     Filter=QuizFilter(request.GET,queryset=query)
