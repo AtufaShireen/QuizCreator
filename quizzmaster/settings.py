@@ -31,6 +31,7 @@ ALLOWED_HOSTS = []
 
 INSTALLED_APPS = [
     'quiz.apps.QuizConfig',
+    'users.apps.UsersConfig',
     'rest_framework',
     'django.contrib.admin',
     'django.contrib.auth',
@@ -40,6 +41,7 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     'taggit',
     'django_cleanup',
+    'widget_tweaks'
 ]
 
 MIDDLEWARE = [
@@ -124,3 +126,5 @@ STATIC_URL = '/static/'
 MEDIA_ROOT = str(BASE_DIR/ 'media')  # create folder
 MEDIA_URL = '/media/'
 TAGGIT_CASE_INSENSITIVE = True
+LOGIN_URL = 'login'
+LOGIN_REDIRECT_URL = 'quiz:quizzes'

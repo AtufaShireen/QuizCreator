@@ -1,0 +1,113 @@
+{%extends 'users/base.html'%}
+{%load static%}
+{%block css%}
+<link rel="stylesheet" href="{%static 'users/about.css'%}" type="text/css">
+<link rel="stylesheet" href="{%static 'users/profile.css'%}" type="text/css">
+{%endblock css%}
+{%load widget_tweaks%}
+{%block body%}
+<div class="bore">
+    <div class="content" id="content">
+
+        <h1 class='title'>{{user.username}}</h1>
+        <img src="{{user.profile.pic.url}}" alt="Aimeri basking in the sun" class="circle">
+        <div class="cop">
+            <div class="content-card">
+                <br/> {{user.profile.bio}}
+
+            </div>
+            <div class="detail">
+                <button class="button button--isi button--text-thick button--text-upper button--size-s"
+                        onclick="myFunction()"> Update Your Details
+                </button>
+            </div>
+        </div>
+
+    </div>
+    <div class="content2" id="myDIV">
+        <form method='POST' action="" enctype="multipart/form-data">
+            <div class="sttng">
+                {%csrf_token%}
+                {%for hidden in u_form.hidden_fields%}
+                {{hidden}}
+                {%endfor%}
+                {%for field in u_form.visible_fields%}
+                <div class="form-group">
+                    <label for="{{field.id_for_label}}">{{field.label}}</label>
+                    {{field|add_class:'form-control'}}
+                    {%for error in field.errors%}
+                    <span class="help-block">{{error}}</span>
+                    {%endfor%}
+                </div>
+                {%endfor%}
+                {%for hidden in p_form.hidden_fields%}
+                {{hidden}}
+                {%endfor%}
+                {%for field in p_form.visible_fields%}
+                <div class="form-group">
+
+                    {% if field.name == 'pic' %}
+                    <div id='profile-upload'>
+                        <div class="hvr-profile-img">
+                            {%if field.help_text%}
+                            {{field.help_text}}
+                            {%endif%}
+
+                            {{ field|add_class:"upload"|attr:"id=getval" }}
+                            <div class="icon">
+                                <div class="camera4"><span></span></div>
+                            </div>
+                        </div>
+                        {% elif field.name == 'bio' %}
+                        <label for="{{field.id_for_label}}">{{field.label}}</label>
+                        {{ field|add_class:"bio" }}
+                    </div>
+                    {%else%}
+                    <label for="{{field.id_for_label}}">{{field.label}}</label>
+                    {{field|add_class:'form-control'}}
+                    {%endif%}
+                    {%for error in field.errors%}
+                    <span class="help-block">{{error}}</span>
+                    {%endfor%}
+                </div>
+                {%endfor%}
+
+            </div>
+            <div class="buttons">
+                <button type="submit" class="btn btn-success">
+                    <span class="glyphicon glyphicon-ok"></span> Save
+                </button>
+                <a href="/quizzes/" class="btn btn-default">Cancel</a>
+            </div>
+        </form>
+    </div>
+</div>
+{%endblock%}
+{%block js%}
+
+function myFunction() {
+var x = document.getElementById("myDIV");
+var y =document.getElementById("content");
+if (x.style.display === "none") {
+y.style.width = "460px";
+x.style.display = "block";
+y.style.margin ="40px 20px 0 20px";
+}
+else {
+x.style.display = "none";
+}
+}
+
+document.getElementById('getval').addEventListener('change', readURL, true);
+function readURL(){
+var file = document.getElementById("getval").files[0];
+var reader = new FileReader();
+reader.onloadend = function(){
+document.getElementById('profile-upload').style.backgroundImage = "url(" + reader.result + ")";
+}
+if(file){
+reader.readAsDataURL(file);
+}else{
+}
+}
+{%endblock%}

@@ -5,8 +5,9 @@ from .models import Quizzer,Questions
 # class RequiredFormSet(BaseInlineFormSet): # not required for update form
 #     def __init__(self, *args, **kwargs):
 #         super(RequiredFormSet, self).__init__(*args, **kwargs)
-#         print('----------self.forms[0]',self.forms[0])
+        
 #         self.forms[0].empty_permitted = False
+#         print('----------self.forms[0]',self.forms[0])
             
 QuestionsFormset = inlineformset_factory(Quizzer,Questions,fields=['question','option_1','option_2','option_3','option_4','answer'],extra=1) # ,formset=RequiredFormSet
 

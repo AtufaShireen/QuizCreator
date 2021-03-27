@@ -1,0 +1,26 @@
+{% extends "users/base.html" %}
+{%block css%}
+{%load static%}
+<link rel="stylesheet" href="{%static 'users/register.css'%}" type="text/css">
+{%endblock css%}
+{% block body %}
+
+<section class="login-panel">
+    <div class="left-side"></div>
+    <div class="right-side">
+        <h1>Sign Up<br>
+        <span>Paste or find django notes here</span>
+            </h1>
+        <form method='post'>
+            {%csrf_token%}
+            {{form}}
+            <input type="submit" value="let's go" class="submit-btn">
+        </form>
+
+        <small class="text-muted">
+            Already Have An Account? <a class="ml-2" href="{% url 'login' %}">LogIn</a>
+        </small>
+
+    </div>
+</section>
+{% endblock body %}

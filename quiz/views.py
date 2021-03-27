@@ -8,7 +8,7 @@ from django.contrib import messages
 from django.shortcuts import get_object_or_404
 from .forms import QuestionsFormset,QuizForm
 from .filters import QuizFilter
-
+from django.db.models import Q
 def quiz_form(request, quizzer_id=None):
     try:
         inst=Quizzer.objects.get(id=quizzer_id)
@@ -42,13 +42,23 @@ def QuizzView(request,slug):
                 counter+=1
             else:
                 print('actual answer was',i.answer,'selected answer was',request.POST[i.question]) 
-        add_score=QuizScore(user=request.user,quiz=quiz,score=counter)
+        try:
+            print('----------------main thingie here-----',QuizScore.objects.all())
+            add_score=QuizScore.objects.get(user=request.user,quiz=quiz)
+            print('---------yes,,,,,,,,already attempted quiz herer...')
+            add_score.score=counter
+            add_score.save()
+        except QuizScore.DoesNotExist:
+            print('-------------not attempted this quiz')
+            add_score=QuizScore(user=request.user,quiz=quiz,score=counter)
+            add_score.save()
         messages.success(request, f'Your Score was {counter}')
         return redirect('quiz:quizzes')
     return render(request,'quiz/quiz.html',context=context)
 
 def ResultPage(requests,score):
     return HttpResponse(f'Your Score Was..{score}')
+
 def Quizzes(request):
     query=Quizzer.objects.all()
     Filter=QuizFilter(request.GET,queryset=query)

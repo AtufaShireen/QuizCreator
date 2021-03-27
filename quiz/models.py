@@ -7,7 +7,7 @@ from taggit.managers import TaggableManager
 # Create your models here.
 class Quizzer(models.Model):
     user = models.ForeignKey(User, on_delete=models.CASCADE,related_name='user_quiz')
-    title = models.CharField(max_length=250, null=False)
+    title = models.CharField(max_length=250, null=False,unique=True)
     slug = models.SlugField(null=True, blank=True)
     bg_pic = models.ImageField(default='def.png', upload_to='quiz_pic')
     tags=TaggableManager()
@@ -25,7 +25,8 @@ class Quizzer(models.Model):
     @property
     def question_count(self):
         return self.quizz_question.count()
-
+    def get_absolute_url(self):
+        return reverse('quiz:quizz',kwargs={'slug':self.slug})
     def save(self, *args, **kwargs):
         self.slug = slugify(self.title)
         super(Quizzer, self).save(*args, **kwargs)
@@ -38,7 +39,7 @@ class Questions(models.Model):
     option_2=models.CharField(max_length=1024, default='')
     option_3=models.CharField(max_length=1024, default='')
     option_4=models.CharField(max_length=1024, default='')
-    answer=models.IntegerField(validators=[MinValueValidator(1), MaxValueValidator(4)],default=1)
+    answer=models.PositiveIntegerField(validators=[MinValueValidator(1), MaxValueValidator(4)],default=1)
 
     def __str__(self):
         return f'{self.question}'
@@ -52,3 +53,5 @@ class QuizScore(models.Model):
     user=models.ForeignKey(User, on_delete=models.CASCADE)
     quiz=models.ForeignKey(Quizzer, on_delete=models.CASCADE)
     score=models.IntegerField(default=0)
+    def __str__(self):
+        return f"{self.user}'s score{self.score}"
