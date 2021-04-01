@@ -1,69 +1,278 @@
-<h1> Quiz title - {{object.title}} {{object.id}}</h1>
-<ul>Questions
-    {%for i in object.all_question%}
-    <li>{{i.question}}
-        <ul>
+<html lang="en">
+
+<head>
+    <!-- Required meta tags -->
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <!-- Bootstrap CSS -->
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.1.1/css/bootstrap.min.css"
+        integrity="sha384-WskhaSGFgHYWDcbwN70/dfYBj47jz9qbsMId/iRN3ewGhXQFZCSftd1LZCfmhktB" crossorigin="anonymous">
+    <style type="text/css">
+        .spacer {
+            margin-top: 25px;
+        }
+        input{
+            border-top: 0;
+            border-right: 0;
+        }
+        .question{
+            height: auto;
+            width: 500px;
             
+        }
+    </style>
 
-            <li>j ->{{i.option_1}}</li>
-            <li>j ->{{i.option_2}}</li>
-            <li>j ->{{i.option_3}}</li>
-            <li>j ->{{i.option_4}}</li>
-       
-        </ul>
-    </li>
+    <title>Quiz Creator App</title>
+</head>
+
+<body>
+    <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
+        <a class="navbar-brand" href="#">Quizz Creator App</a>
+        <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent"
+            aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+        <div class="collapse navbar-collapse" id="navbarSupportedContent">
+            <ul class="navbar-nav mr-auto">
+                <li class="nav-item active">
+                    <a class="nav-link" href="/">Home <span class="sr-only">(current)</span></a>
+                </li>
+            </ul>
+        </div>
+    </nav>
+
+    <div class="container">
+        <div class="row spacer"></div>
+        <div class="row offset-2">
+            <div class="col-12">
+                <form class="form-horizontal" method="POST" action="" enctype="multipart/form-data">
+                    {% csrf_token %}
+                    <div class="row spacer">
+                        <div class="col-2">
+                            {{quiz_form.non_field_errors}}
+                                {{quiz_form.errors}}
+                            <label>{{quiz_form.title.label}}</label>
+                        </div>
+                        <div class="col-4">
+                            <div class="input-group">
+                                {{quiz_form.title}}
+                                
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row spacer">
+                        <div class="col-2">
+                            <label>{{quiz_form.tags.label}}</label>
+                        </div>
+                        <div class="col-4">
+                            <div class="input-group">
+                                {{quiz_form.tags}}
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row spacer">
+                        <div class="col-2">
+                            <label>{{quiz_form.bg_pic.label}}</label>
+                        </div>
+                        <div class="col-4">
+                            <div class="input-group">
+                                {{quiz_form.bg_pic}}
+                            </div>
+                        </div>
+                    </div>
+                    
+                    {{ quest_form.management_form }}
+                    <div class="input-group-append">
+                        <button class="btn btn-success add-form-row">Add Questions</button>
+                        <button class="btn btn-danger remove-form-row">Remove Question</button>
+
+                    </div>
+                    <br>
+                    {% for form in quest_form %}
+                    <div class="form-row">
+
+                        <div class="col-2">
+                            {{form.non_field_errors}}
+                                {{form.errors}}
+                                {{form.id}}
+                            <label>{{form.question.label}} {{form.question.id_}}</label>
+                        </div>
+                        <div class="col-8">
+                            <div class="input-group question">
+                                {{form.question}}
+
+                            </div>
+                        </div>
+                        <div class="row spacer">
+
+                            <div class="col-2">
+                                <label>{{form.option_1.label}}</label>
+                            </div>
+                            <div class="col-4">
+                                <div class="input-group">
+                                    {{form.option_1}}
+                                </div>
+                            </div>
+                            <div class="col-2">
+                                <label>{{form.option_2.label}}</label>
+                            </div>
+                            <div class="col-4">
+                                <div class="input-group">
+                                    {{form.option_2}}
+                                </div>
+                            </div>
+                            <div class="col-2">
+                                <label>{{form.option_3.label}}</label>
+                            </div>
+                            <div class="col-4">
+                                <div class="input-group">
+                                    {{form.option_3}}
+                                </div>
+                            </div>
+                            <div class="col-2">
+                                <label>{{form.option_4.label}}</label>
+                            </div>
+                            <div class="col-4">
+                                <div class="input-group">
+                                    {{form.option_4}}
+                                </div>
+                            </div>
+                            <div class="col-2">
+                                <label>{{form.answer.label}}</label>
+                            </div>
+                            <div class="col-4">
+                                <div class="input-group">
+                                    {{form.answer}}
+                                </div>
+                            </div>
+                        </div>
+                        <br>
+                    </div>
+                    {% endfor %}
+                    <div class="row spacer">
+                        <div class="col-4 offset-2">
+                            <button type="submit" class="btn btn-block btn-primary">Create</button>
+                        </div>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+    <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js"
+        integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo"
+        crossorigin="anonymous"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.3/umd/popper.min.js"
+        integrity="sha384-ZMP7rVo3mIykV+2+9J3UJ46jBk0WLaUAdn689aCwoqbBJiSnjAK/l8WvCWPIPm49"
+        crossorigin="anonymous"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.1.1/js/bootstrap.min.js"
+        integrity="sha384-smHYKdLADwkXOn1EmN1qk/HfnUcbVRZyYmZ4qpPea6sjB/pTJ0euyQp0Mk8ck+5T"
+        crossorigin="anonymous"></script>
+
+    <script src="https://code.jquery.com/jquery-3.2.1.slim.min.js"
+        integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN"
+        crossorigin="anonymous"></script>
+    <script type="text/javascript">
+        function updateElementIndex(el, prefix, ndx) {
+            var id_regex = new RegExp('(' + prefix + '-\\d+)');
+            var replacement = prefix + '-' + ndx;
+            if ($(el).attr("for")) $(el).attr("for", $(el).attr("for").replace(id_regex, replacement));
+            if (el.id) el.id = el.id.replace(id_regex, replacement);
+            if (el.name) el.name = el.name.replace(id_regex, replacement);
+        }
+        function cloneMore(selector, prefix) {
+            prefix = 'quizz_question'
+            var newElement = $(selector).clone(true);
+            var total = $('#id_' + prefix + '-TOTAL_FORMS').val();
+            newElement.find(':input:not([type=button]):not([type=submit]):not([type=reset])').each(function () {
+                var name = $(this).attr('name')
+                if (name) {
+                    name = name.replace('-' + (total - 1) + '-', '-' + total + '-');
+                    var id = 'id_' + name;
+                    $(this).attr({ 'name': name, 'id': id }).val('').removeAttr('checked');
+                }
+            });
+            newElement.find('label').each(function () {
+                var forValue = $(this).attr('for');
+                if (forValue) {
+                    forValue = forValue.replace('-' + (total - 1) + '-', '-' + total + '-');
+                    $(this).attr({ 'for': forValue });
+                }
+            });
+            total++;
+            $('#id_' + prefix + '-TOTAL_FORMS').val(total);
+            $(selector).after(newElement);
+            var conditionRow = $('.form-row:not(:last)');
+            conditionRow.find('.btn.add-form-row')
+                .removeClass('btn-success').addClass('btn-danger')
+                .removeClass('add-form-row').addClass('remove-form-row')
+                .html('-');
+            return false;
+        }
+        function deleteForm(prefix, btn) {
+            prefix = 'quizz_question'
+            var total = parseInt($('#id_' + prefix + '-TOTAL_FORMS').val());
+            if (total > 1) {
+                btn.closest('.form-row').remove();
+                var forms = $('.form-row');
+                $('#id_' + prefix + '-TOTAL_FORMS').val(forms.length);
+                for (var i = 0, formCount = forms.length; i < formCount; i++) {
+                    $(forms.get(i)).find(':input').each(function () {
+                        updateElementIndex(this, prefix, i);
+                    });
+                }
+            }
+            return false;
+        }
+        $(document).on('click', '.add-form-row', function (e) {
+            e.preventDefault();
+            cloneMore('.form-row:last', 'form');
+            return false;
+        });
+        $(document).on('click', '.remove-form-row', function (e) {
+            e.preventDefault();
+            deleteForm('form', $(this));
+            return false;
+        });
+
+    </script>
+
+
+</body>
+
+</html>
+
+<div class="space">
+  {% for message in messages %}
+<div class="alert alert-success alert-dismissible text-center" role="alert">
+<button type="button" class="close" data-dismiss="alert" aria-label="Close">
+  <span aria-hidden="true">&times;</span>
+</button>
+{{ message }}
+</div>
+{% endfor %}
+</div>
+<div class='created_quizzes'>
+    <h3>
+        created_quizzes
+    </h3>
+    <ul>
+        create cards here
+        {%for i in created_quizzes%}
+        <li>{{i.title}}</li>
+        {%endfor%}
+    </ul>
+</div>
+<div class='attempted-quizzes'>
+    <h3>
+        attempted-quizzes
+    </h3>
+    {%for score,quiz in quiz_score%}
+    <ul>
+        <li>{{quiz.title}}-{{score}}
+            {%if quiz.reattempt%}
+            <span><a href="/quiz/{{quiz.slug}}"> Reattempt</a></span>
+            {%endif%}
+        </li>
+    </ul>
     {%endfor%}
-</ul>
-<div class="quiz-form__quiz">
-    <p class="quiz-form__question">
-      2. Why is plastic dangerous for marine life?
-    </p>
-    <label class="quiz-form__ans" for="q21">
-      <input type="radio" name="q2" id="q21" value="A" checked />
-      <span class="design"></span>
-      <span class="text">It's not dangerous because they use plastic waste for
-        habitats</span>
-    </label>
-    <label class="quiz-form__ans" for="q22">
-      <input type="radio" name="q2" id="q22" value="B" />
-      <span class="design"></span>
-      <span class="text">They can get tangled in it which hinders their ability to
-        swim</span>
-    </label>
-    <label class="quiz-form__ans" for="q23">
-      <input type="radio" name="q2" id="q23" value="C" />
-      <span class="design"></span>
-      <span class="text">They mistake it for food and cannot digest it</span>
-    </label>
-    <label class="quiz-form__ans" for="q24">
-      <input type="radio" name="q2" id="q24" value="D" />
-      <span class="design"></span>
-      <span class="text">Both a and b</span>
-    </label>
-  </div>
-
-  <div class="quiz-form__quiz">
-    <p class="quiz-form__question">
-      3. Where does the majority of plastic waste end up?
-    </p>
-    <label class="quiz-form__ans" for="q31">
-      <input type="radio" name="q3" id="q31" value="A" checked />
-      <span class="design"></span>
-      <span class="text">Recycled</span>
-    </label>
-    <label class="quiz-form__ans" for="q32">
-      <input type="radio" name="q3" id="q32" value="B" />
-      <span class="design"></span>
-      <span class="text">Oceans</span>
-    </label>
-    <label class="quiz-form__ans" for="q33">
-      <input type="radio" name="q3" id="q33" value="C" />
-      <span class="design"></span>
-      <span class="text">Burned for energy</span>
-    </label>
-    <label class="quiz-form__ans" for="q34">
-      <input type="radio" name="q3" id="q34" value="D" />
-      <span class="design"></span>
-      <span class="text">Landfills</span>
-    </label>
-  </div>
+</div>

@@ -1,7 +1,7 @@
 from django.shortcuts import render, HttpResponseRedirect, redirect,HttpResponse
 from django.views.generic import ListView, CreateView, DeleteView, DetailView, UpdateView
 from .models import Questions, Quizzer,QuizScore
-from .serializers import QuizzerSerializer, QuestionSerializer
+from .serializers import QuizzerSerializer, QuestionSerializer,UserAttemptedQuizes
 from rest_framework.generics import ListAPIView
 from rest_framework.views import APIView, Response
 from django.contrib import messages
@@ -11,7 +11,7 @@ from .filters import QuizFilter
 from django.db.models import Q
 def quiz_form(request, quizzer_id=None):
     try:
-        inst=Quizzer.objects.get(id=quizzer_id)
+        inst=Quizzer.objects.get(slug=quizzer_id)
     except Quizzer.DoesNotExist:
         inst=None
         
@@ -29,7 +29,7 @@ def quiz_form(request, quizzer_id=None):
             i.save()
         return redirect('/quizzes/')
   
-    return render(request, 'quiz/create-quiz.html', {'quest_form': ques_fromset,'quiz_form':quiz_form})
+    return render(request, 'quiz/create-quiz.html', {'quest_form': ques_fromset,'quiz_form':quiz_form}) #create-quiz
 
 def QuizzView(request,slug):
     quiz=Quizzer.objects.get(slug=slug)
@@ -43,7 +43,7 @@ def QuizzView(request,slug):
             else:
                 print('actual answer was',i.answer,'selected answer was',request.POST[i.question]) 
         try:
-            print('----------------main thingie here-----',QuizScore.objects.all())
+            print('----------------main thingie here-----')
             add_score=QuizScore.objects.get(user=request.user,quiz=quiz)
             print('---------yes,,,,,,,,already attempted quiz herer...')
             add_score.score=counter
@@ -76,4 +76,16 @@ class QuizzApiView(APIView):
         quiz = get_object_or_404(Quizzer, slug__iexact=kwargs['slug'])  # case insensitive LIKE clause
         questions = Questions.objects.filter(quizz=quiz)
         serializer = QuestionSerializer(questions, many=True)  # add related name to the models for working
+        return Response(serializer.data)
+
+class AttemptedQuizzApiView(APIView):
+    def get(self, request, format=None, **kwargs):
+        quizzes = QuizScore.objects.filter(user=self.request.user)
+        serializer = UserAttemptedQuizes(quizzes, many=True)  # add related name to the models for working
+        return Response(serializer.data)
+
+class UserQuizzesApiView(APIView):
+    def get(self, request, format=None, **kwargs):
+        quizzes = Quizzer.objects.filter(user=self.request.user)
+        serializer = QuizzerSerializer(quizzes, many=True)  # add related name to the models for working
         return Response(serializer.data)

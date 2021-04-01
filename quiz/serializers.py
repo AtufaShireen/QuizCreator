@@ -1,5 +1,5 @@
 from rest_framework import serializers
-from .models import Quizzer, Questions
+from .models import Quizzer, Questions,QuizScore
 
 
 class QuestionSerializer(serializers.ModelSerializer):
@@ -14,5 +14,12 @@ class QuizzerSerializer(serializers.ModelSerializer):
     tags=serializers.CharField(source='all_tags', read_only=True)
     class Meta:
         model = Quizzer
-        fields = ['id','title','n_questions','tags'] # 
+        fields = ['id','title','n_questions','tags'] # 'user.username', use method field
         depth=1
+class UserAttemptedQuizes(serializers.ModelSerializer):
+    title=serializers.CharField(source='quizzie_score', read_only=True)
+    class Meta:
+        model=QuizScore
+        fields=['title','score']
+
+#apple.tags.slugs()

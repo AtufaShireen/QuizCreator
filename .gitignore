@@ -8,3 +8,4 @@ db.sqlite3
 .vscode
 scraping.py
 media
+testing.html

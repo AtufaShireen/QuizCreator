@@ -1,11 +1,6 @@
-<!DOCTYPE html>
-<html lang="en">
-
-<head>
-  <meta charset="utf-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
-  <!-- Bootstrap CSS -->
-  <title>QuizzMaster</title>
+{%extends 'users/base.html'%}
+{%load static%}
+{%block css%}
   <style>
     * {
       margin: 0;
@@ -193,27 +188,20 @@
       color: crimson;
     }
   </style>
-</head>
 
-<body>
-  <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@300;400;500&display=swap" rel="stylesheet" />
-  <div class="container">
+{%endblock css%}
+{%block body%}
+
+<div class="container">
     <div class="heading">
       <h1 class="heading__text">{{quiz.title}}</h1>
       <span>Total {{quiz.question_count}} Questions</span>
-      <br/>
+    </br>
+     <a href="#"><h5>By {{quiz.user.username}}</h5></a>
       <br/>
     </div>
 
-    <!-- Quiz section -->
-    {% for message in messages %}
-    <div class="alert success alert-dismissible" role="alert">
-      <button type="button" class="close" data-dismiss="alert" aria-label="Close">
-        <span aria-hidden="true">&times;</span>
-      </button>
-      {{ message }}
-    </div>
-  {% endfor %}
+    
 
       <form class="quiz-form" method="POST">
         {%csrf_token%}
@@ -221,6 +209,7 @@
         <div class="quiz-form__quiz">
           <p class="quiz-form__question">
             {{forloop.counter}}. {{i.question}}
+            
           </p>
           <label class="quiz-form__ans" for="q1_{{i.id}}">
             <input type="radio" name="{{i.question}}" id="q1_{{i.id}}" value="1" />
@@ -255,6 +244,4 @@
       </form>
     </div>
   </div>
-</body>
-
-</html>
+{%endblock%}

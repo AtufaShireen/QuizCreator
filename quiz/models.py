@@ -10,11 +10,11 @@ class Quizzer(models.Model):
     title = models.CharField(max_length=250, null=False,unique=True)
     slug = models.SlugField(null=True, blank=True)
     bg_pic = models.ImageField(default='def.png', upload_to='quiz_pic')
+    reattempt=models.BooleanField(default=True,verbose_name='Allow Reattempt')
     tags=TaggableManager()
 
     def __str__(self):
         return self.title
-
     @property
     def all_question(self):
         return self.quizz_question.all()
@@ -39,7 +39,7 @@ class Questions(models.Model):
     option_2=models.CharField(max_length=1024, default='')
     option_3=models.CharField(max_length=1024, default='')
     option_4=models.CharField(max_length=1024, default='')
-    answer=models.PositiveIntegerField(validators=[MinValueValidator(1), MaxValueValidator(4)],default=1)
+    answer=models.PositiveIntegerField(validators=[MinValueValidator(1), MaxValueValidator(4)],default=1,verbose_name='correct option')
 
     def __str__(self):
         return f'{self.question}'
@@ -51,7 +51,10 @@ class Questions(models.Model):
 
 class QuizScore(models.Model):
     user=models.ForeignKey(User, on_delete=models.CASCADE)
-    quiz=models.ForeignKey(Quizzer, on_delete=models.CASCADE)
+    quiz=models.ForeignKey(Quizzer, on_delete=models.CASCADE,related_name='score_quiz')
     score=models.IntegerField(default=0)
+    @property
+    def quizzie_score(self):
+        return (self.quiz.title) # ,self.score
     def __str__(self):
         return f"{self.user}'s score{self.score}"
