@@ -3,139 +3,51 @@
 {%extends 'users/base.html'%}
 {%load static%}
 {%block css%}
-    <style>
-        h2 {
-            margin-bottom: 30px;
-            color: #484848;
-            font-size: 50px;
-        }
-
-        h2:first-of-type::first-letter {
-            font-size: 80px;
-        }
-
-        .quiz-pic {
-            width: 100%;
-        }
-
-        .card-view {
-            perspective: 1000px;
-        }
-
-        .card-view img {
-            max-width: 280px;
-        }
-
-        .card-view a {
-            display: inline-block;
-            -webkit-transform-style: preserve-3d;
-            -moz-transform-style: preserve-3d;
-            -ms-transform-style: preserve-3d;
-            -o-transform-style: preserve-3d;
-            transform-style: preserve-3d;
-            -webkit-transform: rotateX(70deg);
-            -moz-transform: rotateX(70deg);
-            -ms-transform: rotateX(70deg);
-            -o-transform: rotateX(70deg);
-            transform: rotateX(70deg);
-            -webkit-transition: all 0.8s ease-in-out;
-            -moz-transition: all 0.8s ease-in-out;
-            -ms-transition: all 0.8s ease-in-out;
-            -o-transition: all 0.8s ease-in-out;
-            transition: all 0.8s ease-in-out;
-        }
-
-        .card-view a:hover {
-            -webkit-transform: rotateX(0);
-            -moz-transform: rotateX(0);
-            -ms-transform: rotateX(0);
-            -o-transform: rotateX(0);
-            transform: rotateX(0);
-        }
-
-        .card-view a:hover::before {
-            height: 65px;
-            visibility: visible;
-        }
-
-        .card-view a::before {
-            position: absolute;
-            top: auto;
-            bottom: -65px;
-            display: inline-block;
-            height: 0;
-            width: 100%;
-            visibility: hidden;
-            background: Radial-gradient(closest-side, rgba(0, 0, 0, 0.59), transparent);
-            background: Radial-gradient(closest-side, rgba(0, 0, 0, 0.75), 50%, transparent);
-            filter: blur(18px);
-            transform: scaleY(0.3);
-            -webkit-transform: scaleY(0.3);
-            -moz-transform: scaleY(0.3);
-            -ms-transform: scaleY(0.3);
-            -o-transform: scaleY(0.3);
-            transition: all 0.8s ease-in-out;
-            -webkit-transition: all 0.8s ease-in-out;
-            -moz-transition: all 0.8s ease-in-out;
-            -ms-transition: all 0.8s ease-in-out;
-            -o-transition: all 0.8s ease-in-out;
-            content: "";
-        }
-
-        .card-view a::after {
-            position: absolute;
-            bottom: 0;
-            left: 0;
-            height: 40px;
-            width: 100%;
-            background: linear-gradient(rgba(0, 0, 0, 0.2), rgba(0, 0, 0, 0.1));
-            -webkit-transform: rotateX(90deg);
-            -moz-transform: rotateX(90deg);
-            -ms-transform: rotateX(90deg);
-            -o-transform: rotateX(90deg);
-            transform: rotateX(90deg);
-            -webkit-transform-origin: bottom;
-            -moz-transform-origin: bottom;
-            -ms-transform-origin: bottom;
-            -o-transform-origin: bottom;
-            transform-origin: bottom;
-            content: "";
-        }
-
-        .space {
-            display: inline-block;
-            height: 50px;
-            width: 100%;
-        }
-    </style>
-
+<link rel="stylesheet" href="{%static 'users/home.css'%}" type="text/css">
 {%endblock css%}
 {%block body%}
-   
 
-    <section style="margin-bottom: 50px;">
-        <div class="container">
-            <h2 class="text-center">---QuizMaster</h2>
-            <div class="col-md-12">
-                <p>Select Your Quizzz____</p>
-                <form method="get" action=".">
-                    {{filter.form}}
-                    <button type="submit">Search</button>
-                </form>
-                <div class="row">
 
-                    {%for quizie in filter.qs%}
-                    <!--quizzes -->
-                    <div class="col-md-4 col-sm-4 text-center card-view">
-                        <a href="{% url 'quiz:quizz' quizie.title|slugify %}"><img class="quiz-pic" src="{{quizie.bg_pic.url}}"
-                                alt="{{quizie.title}}" border="0"><br>{{quizie.title}}</a>
-                    </div>
-                    {%endfor%}
+<section style="margin-bottom: 50px;">
+    <div class="container">
+        <h2 class="text-center">---QuizMaster</h2>
+        <div class="col-md-12">
+            <p>Select Your Quizzz____</p>
+            <form method="get" action=".">
+                {{filter.form}}
+                <button type="submit">Search</button>
+            </form>
+            <section class="cards-wrapper">
+
+                {%for q in filter.qs%}
+                <div class="card-grid-space">
+                    {%if user.is_authenticated%}
+                        {%if author%}
+                        <a href="{%url 'quiz:update-quiz' q.slug%}" class="update">Update</a>
+                        {%else%}
+                        <a href="{%url 'quiz:quizz' q.slug%}" class="update">Take Quiz</a>
+                        {%endif%}
+                    {%endif%}
+                    <a class="card" style="&#45;&#45;bg-img: url({{q.bg_pic.url}})">
+                        <div>
+                            <h3>{{q.title}}</h3>
+                            <div class="tags">
+                                <div class="tag">By {{q.user.username}}</div>
+                                <div class="tag">
+                                    {%for i in q.tags.all%}
+                                    {{i.name}}
+                                    {%endfor%}
+                                </div>
+                            </div>
+                        </div>
+                    </a>
                 </div>
-            </div>
+                {%endfor%}
+            </section>
         </div>
-    </section>
+    </div>
+</section>
 
-    <div class="space"></div>
+<div class="space"></div>
 
-    {%endblock body%}
+{%endblock body%}

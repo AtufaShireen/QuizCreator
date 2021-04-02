@@ -197,7 +197,7 @@
       <h1 class="heading__text">{{quiz.title}}</h1>
       <span>Total {{quiz.question_count}} Questions</span>
     </br>
-     <a href="#"><h5>By {{quiz.user.username}}</h5></a>
+     <a href="{%url 'view-profile' quiz.user.username%}"><h5>By {{quiz.user.username}}</h5></a>
       <br/>
     </div>
 

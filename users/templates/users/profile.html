@@ -87,13 +87,16 @@
 </div>
 <h2>Created Quizzes</h2>
 <section class="cards-wrapper">
-    
-    </br>
+
     {%for q in created_quizzes%}
     <div class="card-grid-space">
+
         {%if author%}
-        <a class="card" href="{%url 'quiz:update-quiz' q.slug%}" style="&#45;&#45;bg-img: url({{q.bg_pic.url}})">
-            {%endif%}
+        <a href="{%url 'quiz:update-quiz' q.slug%}" class="update">Update</a>
+        {%else%}
+        <a href="{%url 'quiz:quizz' q.slug%}" class="update">Take Quiz</a>
+        {%endif%}
+        <a class="card" style="&#45;&#45;bg-img: url({{q.bg_pic.url}})">
             <div>
                 <h3>{{q.title}}</h3>
                 <div class="tags">
@@ -111,23 +114,29 @@
 </section>
 <h2>Attempted Quizzes</h2>
 <section class="cards-wrapper">
-   
+
     {%for score,quiz in quiz_score%}
 
-    </br>
     <div class="card-grid-space">
-        <div>
-            <h3>{{quiz.title}}</h3>
-            <div class="tags">
-                <div class="tag">By {{quiz.user.username}}</div>
-                <div class="tag">
-                    {%if quiz.reattempt%}
-                    <span><a href="/quiz/{{quiz.slug}}"> Reattempt</a></span>
-                    {%endif%}
+        {%if quiz.user.id == request.user.id%}
+        <a href="{%url 'quiz:update-quiz' quiz.slug%}" class="update">Update</a>
+        {%else%}
+        <a href="{%url 'quiz:quizz' quiz.slug%}" class="update">Take Quiz</a>
+        {%endif%}
+        {%if author and quiz.reattempt%}
+            <span><a href="/quiz/{{quiz.slug}}" class='reattempt'> Reattempt</a></span>
+        {%endif%}
+
+        <a class="card" href="#" style="&#45;&#45;bg-img: url({{q.bg_pic.url}})">
+            <div>
+                <h3>{{quiz.title}}</h3>
+                <div class="tags">
+                    <div class="tag">By {{quiz.user.username}}</div>
+                    <div class="tag">Score {{score}}</div>
                 </div>
             </div>
-        </div>
         </a>
+        
     </div>
     {%endfor%}
 </section>

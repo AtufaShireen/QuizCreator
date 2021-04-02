@@ -60,7 +60,10 @@ def ResultPage(requests,score):
     return HttpResponse(f'Your Score Was..{score}')
 
 def Quizzes(request):
-    query=Quizzer.objects.all()
+    if request.user.is_authenticated:
+        query=Quizzer.objects.exclude(user=request.user)
+    else:
+        query=Quizzer.objects.all()
     Filter=QuizFilter(request.GET,queryset=query)
     context={'quizzes':query,'filter':Filter}
     return render(request,'quiz/quizzes.html',context)
