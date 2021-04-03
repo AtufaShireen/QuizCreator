@@ -9,14 +9,17 @@ from django.shortcuts import get_object_or_404
 from .forms import QuestionsFormset,QuizForm
 from .filters import QuizFilter
 from django.db.models import Q
-def quiz_form(request, quizzer_id=None):
+from django.contrib.auth.decorators import login_required
+@login_required
+def quiz_form(request, quiz_tit=None):
     try:
-        inst=Quizzer.objects.get(slug=quizzer_id)
+        inst=Quizzer.objects.get(slug=quiz_tit)
     except Quizzer.DoesNotExist:
         inst=None
         
     quiz_form=QuizForm(request.POST or None,request.FILES or None,instance=inst)
     ques_fromset=QuestionsFormset(request.POST or None,instance=inst)
+    
     if ques_fromset.is_valid() and quiz_form.is_valid():
         quiz_instance=quiz_form.save(commit=False)
         quiz_instance.user=request.user

@@ -3,7 +3,7 @@ from .views import QuizzView, Quizzes,quiz_form,QuizzApiView,QuizzesApiView,Atte
 app_name='quiz'
 urlpatterns = [
     path('quiz/add/',quiz_form, name='create-quiz'),
-    path('quiz/edit/<str:quizzer_id>/', quiz_form, name='update-quiz'),
+    path('quiz/edit/<str:quiz_tit>/', quiz_form, name='update-quiz'),
     path('quizzes/', Quizzes, name='quizzes'),
     path('quiz/<str:slug>/', QuizzView, name='quizz'),
     path('api-auth/',include('rest_framework.urls')),
