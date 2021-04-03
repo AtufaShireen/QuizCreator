@@ -7,11 +7,8 @@ class QuizzerTestCase(TestCase):
     def setUp(self):  
         user=User.objects.create(username='Atufa')
         x=Quizzer.objects.create(user=user, title="Animal Sounds",reattempt=False) #tags=['lion','cat']
+        x.tags.add('lion','tiger')
         x.save()
-        tag1 = x.tags.create(name="lion")
-        tag1.save()
-        tag2 = x.tags.create(name="tiger")
-        tag2.save()
         y=Questions.objects.create(
             quizz=x,
             question='whose sound is this?..roar..',
@@ -37,8 +34,7 @@ class QuizzerTestCase(TestCase):
         x = Questions.objects.get(question='whose sound is this?..meow..')
         self.assertEqual(lion.slug, "animal-sounds")
         self.assertEqual(lion.question_count, 2)
-        # self.assertEqual(lion.tags.all(), ["lion",'tiger'])
-        # self.assertEqual(lion.all_tags, ["lion",'tiger'])
+        self.assertEqual(lion.all_tags, ["lion",'tiger'])
         self.assertEqual(str(lion), "Animal Sounds")
         self.assertEqual(x.slug, "whose-sound-is-thismeow")
         self.assertEqual(str(x), "whose sound is this?..meow..")
@@ -78,4 +74,11 @@ class TestQuizCreateForm(TestCase):
         self.assertEqual(Quizzer.objects.count(), 1)
         self.assertEqual(response.status_code, 302)
         self.assertRedirects(response, "/quizzes/")
+# class TestQuizViews(TestCase):
+#     def test_add_quiz(self):
+#         w = self.create_whatever()
+#         url = reverse("whatever.views.whatever")
+#         resp = self.client.get(url)
 
+#         self.assertEqual(resp.status_code, 200)
+#         self.assertIn(w.title, resp.content)
