@@ -10,6 +10,7 @@ from .forms import QuestionsFormset,QuizForm
 from .filters import QuizFilter
 from django.db.models import Q
 from django.contrib.auth.decorators import login_required
+
 @login_required
 def quiz_form(request, quiz_tit=None):
     try:
@@ -44,23 +45,20 @@ def QuizzView(request,slug):
             if i.answer==int(request.POST[i.question]):
                 counter+=1
             else:
-                print('actual answer was',i.answer,'selected answer was',request.POST[i.question]) 
+                pass
         try:
-            print('----------------main thingie here-----')
             add_score=QuizScore.objects.get(user=request.user,quiz=quiz)
-            print('---------yes,,,,,,,,already attempted quiz herer...')
             add_score.score=counter
             add_score.save()
         except QuizScore.DoesNotExist:
-            print('-------------not attempted this quiz')
             add_score=QuizScore(user=request.user,quiz=quiz,score=counter)
             add_score.save()
         messages.success(request, f'Your Score was {counter}')
         return redirect('quiz:quizzes')
     return render(request,'quiz/quiz.html',context=context)
 
-def ResultPage(requests,score):
-    return HttpResponse(f'Your Score Was..{score}')
+# def ResultPage(requests,score):
+#     return HttpResponse(f'Your Score Was..{score}')
 
 def Quizzes(request):
     if request.user.is_authenticated:
@@ -70,6 +68,8 @@ def Quizzes(request):
     Filter=QuizFilter(request.GET,queryset=query)
     context={'quizzes':query,'filter':Filter}
     return render(request,'quiz/quizzes.html',context)
+
+
 
 
 class QuizzesApiView(ListAPIView):

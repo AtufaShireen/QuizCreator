@@ -4,8 +4,10 @@ from .forms import ProfileUpdateForm, UserUpdateForm, UserRegsitrationForm
 from django.contrib.auth.decorators import login_required
 from quiz.models import Quizzer,QuizScore
 
-# Create your views here.
+            
 def register(request):
+    if request.user.is_authenticated:
+        return redirect('quiz:quizzes')
     if request.method == 'POST':
         form = UserRegsitrationForm(request.POST)
         if form.is_valid():
@@ -21,7 +23,6 @@ def register(request):
 @login_required
 def profile(request,view_user=None):
     if view_user is not None:
-        print('user seelecteded------------',view_user)
         x = Quizzer.objects.filter(user__username=view_user)
         t=QuizScore.objects.filter(score__gte=1)
         score=[(y.score,y.quiz) for y in t]
