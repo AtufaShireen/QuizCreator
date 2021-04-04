@@ -7,6 +7,6 @@ db.sqlite3
 .idea
 .vscode
 scraping.py
-media
+/media
 testing.html
-htmlcov
+/htmlcov
