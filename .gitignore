@@ -3,10 +3,10 @@
 __pycache__  
 venv  
 db.sqlite3  
-/static  
+/static/  
 .idea
 .vscode
 scraping.py
-/media
+media/
 testing.html
-/htmlcov
+htmlcov/
