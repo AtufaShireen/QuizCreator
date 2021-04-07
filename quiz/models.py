@@ -4,17 +4,40 @@ from PIL import Image
 from django.template.defaultfilters import slugify
 from django.core.validators import MaxValueValidator, MinValueValidator
 from taggit.managers import TaggableManager
-# Create your models here.
+
+# class CustomQuerySet(models.QuerySet):
+#     def private(self):
+#         return self.filter(private=True)
+
+#     def public(self):
+#         return self.filter(private=False)
+
+# class CustomQueryManager(models.Manager):
+#     def get_queryset(self):
+#         return CustomQuerySet(self.model, using=self._db)
+
+#     def private(self):
+#         return self.get_queryset().private()
+
+#     def public(self):
+#         return self.get_queryset().public()
+
 class Quizzer(models.Model):
     user = models.ForeignKey(User, on_delete=models.CASCADE,related_name='user_quiz')
     title = models.CharField(max_length=250, null=False,unique=True)
     slug = models.SlugField(null=True, blank=True)
     bg_pic = models.ImageField(default='def.png', upload_to='quiz_pic')
     reattempt=models.BooleanField(default=True,verbose_name='Allow Reattempt')
+    private=models.BooleanField(default=False,verbose_name='Make private')
     tags=TaggableManager()
+    objects = models.Manager() #default manager
+    # custom_objects=CustomQueryManager()
 
+    def user_quizzes(self):
+        return self.user.user_quiz.count()
     def __str__(self):
         return self.title
+
     @property
     def all_question(self):
         return self.quizz_question.all()
@@ -25,8 +48,10 @@ class Quizzer(models.Model):
     @property
     def question_count(self):
         return self.quizz_question.count()
+
     def get_absolute_url(self):
         return reverse('quiz:quizz',kwargs={'slug':self.slug})
+
     def save(self, *args, **kwargs):
         self.slug = slugify(self.title)
         super(Quizzer, self).save(*args, **kwargs)

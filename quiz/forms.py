@@ -14,4 +14,4 @@ QuestionsFormset = inlineformset_factory(Quizzer,Questions,fields=['question','o
 class QuizForm(ModelForm):
     class Meta:
         model=Quizzer
-        fields=['title','tags','bg_pic','reattempt']
+        fields=['title','tags','bg_pic','reattempt','private'] #
