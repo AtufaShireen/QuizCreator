@@ -5,7 +5,7 @@ from django.urls import path, include
 from users.views import register,profile
 from django.contrib.auth import views as auth_views
 from quiz import urls
-
+handler404 = 'quiz.views.error_404'
 urlpatterns = [
     path('admin/', admin.site.urls),
     path('register/',register,name='register'),

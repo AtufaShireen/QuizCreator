@@ -3,8 +3,11 @@ from django.contrib import messages
 from .forms import ProfileUpdateForm, UserUpdateForm, UserRegsitrationForm
 from django.contrib.auth.decorators import login_required
 from quiz.models import Quizzer,QuizScore
+from django.contrib.auth.models import User
+from django.db.models import Q
+from django.contrib import messages
+from django.http import Http404
 
-            
 def register(request):
     if request.user.is_authenticated:
         return redirect('quiz:quizzes')
@@ -23,12 +26,18 @@ def register(request):
 @login_required
 def profile(request,view_user=None):
     if view_user is not None:
-        x = Quizzer.objects.filter(user__username=view_user)
+        try:
+            user=User.objects.get(username=view_user)
+        except User.DoesNotExist:
+            messages.warning(request, f'User Doesnot Exists')
+            raise Http404()
+        x = Quizzer.objects.filter(Q(user__username=view_user),Q(private=False))
         t=QuizScore.objects.filter(score__gte=1)
         score=[(y.score,y.quiz) for y in t]
-        context = {'quiz_score':score,'created_quizzes':x,'author':False} #,'quizzes':x
+        context = {'quiz_score':score,'created_quizzes':x,'author':False,'user':user} #,'quizzes':x
         return render(request, 'users/profile.html', context)
-    x = Quizzer.objects.filter(user=request.user)
+    private = Quizzer.objects.filter(Q(user=request.user),Q(private=True))
+    public = Quizzer.objects.filter(Q(user=request.user),Q(private=False))
     t=QuizScore.objects.filter(score__gte=1)
     score=[(y.score,y.quiz) for y in t]
     if request.method == 'POST':
@@ -46,7 +55,7 @@ def profile(request,view_user=None):
         p_form = ProfileUpdateForm(instance=request.user.profile)
         u_form = UserUpdateForm(instance=request.user)
 
-    context = {'u_form': u_form,'p_form': p_form,'quiz_score':score,'created_quizzes':x,'author':True} #,'quizzes':x
+    context = {'u_form': u_form,'p_form': p_form,'quiz_score':score,'public':public,'private':private,'author':True}
     return render(request, 'users/profile.html', context)
 
 # def viewprofile(request,username):

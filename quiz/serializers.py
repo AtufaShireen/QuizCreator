@@ -3,6 +3,7 @@ from .models import Quizzer, Questions,QuizScore
 
 class ProfileSerializer(serializers.ModelSerializer):
     username=serializers.CharField(source='user.username', read_only=True)
+    bio=serializers.CharField(source='user.bio', read_only=True)
     n_quizzes = serializers.CharField(source='user_quizzes', read_only=True)
     class Meta:
         model=Quizzer

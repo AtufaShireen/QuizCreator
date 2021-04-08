@@ -83,7 +83,6 @@
         {{ quest_form.management_form }}
         <div class="input-group-append">
           <button class="btn btn-success add-form-row">Add Questions</button>
-          <button class="btn btn-danger remove-form-row">Remove Question</button>
 
         </div>
         <br>
@@ -211,7 +210,12 @@ if (total > 1) {
 btn.closest('.form-row').remove();
 var forms = $('.form-row');
 $('#id_' + prefix + '-TOTAL_FORMS').val(forms.length);
-for (var i = 0, formCount = forms.length; i < formCount; i++) { $(forms.get(i)).find(':input').each(function () {
+for (var i = 0, formCount = forms.length; i < formCount; i++) {
+   $(forms.get(i)).find(':input').each(function () {
+     
   updateElementIndex(this, prefix, i); }); } } return false; } $(document).on('click', '.add-form-row' , function (e) {
   e.preventDefault(); cloneMore('.form-row:last', 'form' ); return false; }); $(document).on('click', '.remove-form-row'
-  , function (e) { e.preventDefault(); deleteForm('form', $(this)); return false; }); {%endblock js%}
+  , function (e) { e.preventDefault(); deleteForm('form', $(this)); return false; }); 
+  
+  
+  {%endblock js%}

@@ -1,24 +1,48 @@
-from django.shortcuts import render, HttpResponseRedirect, redirect,HttpResponse
+from django.shortcuts import render, HttpResponseRedirect, redirect,HttpResponse,get_object_or_404
 from django.views.generic import ListView, CreateView, DeleteView, DetailView, UpdateView
 from .models import Questions, Quizzer,QuizScore
 from .serializers import  QuestionSerializer,UserAttemptedQuizes ,QuizzerSerializer,ProfileSerializer
 from rest_framework.generics import ListAPIView
 from rest_framework.views import APIView, Response
 from django.contrib import messages
-from django.shortcuts import get_object_or_404
 from .forms import QuestionsFormset,QuizForm
 from .filters import QuizFilter
 from django.db.models import Q
 from django.contrib.auth.decorators import login_required
 from rest_framework.permissions import IsAuthenticated,IsAdminUser
+from django.http import Http404
+def error_404(request,exception):
+    data={}
+    return render(request,'quiz/404.html', data)
 
 @login_required
-def quiz_form(request, quiz_tit=None):
+def add_quiz_form(request): 
+    quiz_form=QuizForm(request.POST or None,request.FILES or None)
+    ques_fromset=QuestionsFormset(request.POST or None)
+    if ques_fromset.is_valid() and quiz_form.is_valid():
+        quiz_instance=quiz_form.save(commit=False)
+        quiz_instance.user=request.user
+        quiz_instance.save()
+        quiz_form.save_m2m()
+        instance = ques_fromset.save(commit=False)
+        for i in instance:  
+            i.quizz=quiz_instance        
+        for i in instance:
+            i.save()
+        return redirect('quiz:quizzes')
+  
+    return render(request, 'quiz/create-quiz.html', {'quest_form': ques_fromset,'quiz_form':quiz_form}) #create-quiz
+
+@login_required
+def edit_quiz_form(request, quiz_tit=None):
     try:
         inst=Quizzer.objects.get(slug=quiz_tit)
+        if inst.user!=request.user:
+            messages.warning(request, f'Quiz Doesnot Exists')
+            raise Http404()
     except Quizzer.DoesNotExist:
-        inst=None
-        
+        messages.warning(request, f'Quiz Doesnot Exists')
+        raise Http404()
     quiz_form=QuizForm(request.POST or None,request.FILES or None,instance=inst)
     ques_fromset=QuestionsFormset(request.POST or None,instance=inst)
     
@@ -36,8 +60,16 @@ def quiz_form(request, quiz_tit=None):
   
     return render(request, 'quiz/create-quiz.html', {'quest_form': ques_fromset,'quiz_form':quiz_form}) #create-quiz
 
+
+@login_required
 def QuizzView(request,slug): # modify to check 404 and private
-    quiz=Quizzer.objects.get(slug=slug)
+    try:
+        quiz=Quizzer.objects.get(slug=slug)
+        if request.user!=quiz.user and quiz.private==True:
+            raise Http404()
+    except Quizzer.DoesNotExist:
+        messages.warning(request,'Quiz Does not exists')
+        raise Http404()
     questions=quiz.all_question
     context={'quiz':quiz,'questions':questions}
     if request.method=='POST':
@@ -63,10 +95,9 @@ def QuizzView(request,slug): # modify to check 404 and private
 
 def Quizzes(request):
     if request.user.is_authenticated:
-        query=Quizzer.custom_objects.exclude(user=request.user)
-        # query=Quizzer.public_objects.all()
+        query=Quizzer.objects.filter(Q(private=False)&~Q(user=request.user))
     else:
-        query=Quizzer.public_objects.all()
+        query=Quizzer.objects.filter(Q(private=False))
     Filter=QuizFilter(request.GET,queryset=query)
     context={'quizzes':query,'filter':Filter}
     return render(request,'quiz/quizzes.html',context)
@@ -102,9 +133,13 @@ class UserQuizzesApiView(APIView):
 class UserProfileApiView(APIView):
     def get(self, request, format=None, **kwargs):
         user=kwargs.pop('username')
-        attempted = QuizScore.objects.filter(user__username=user)
+        try:
+            user=User.objects.get(username=user)
+        except UserDoesnotExists:
+            raise Http404
+        attempted = QuizScore.objects.filter(user=user)
         attempt_serializer = UserAttemptedQuizes(attempted, many=True)
-        public=Quizzer.objects.filter(Q(private=False),Q(user__username=user))
+        public=Quizzer.objects.filter(Q(private=False),Q(user=user))
         pub_serializer = QuizzerSerializer(public, many=True)
         try:    
             if len(public)==0:

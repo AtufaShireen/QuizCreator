@@ -85,10 +85,11 @@
         </form>
     </div>
 </div>
-<h2>Created Quizzes</h2>
+<div class="gradient-border">
+<h2 class='ml-5'>Public Quizzes</h2>
 <section class="cards-wrapper">
-
-    {%for q in created_quizzes%}
+Hola Hola..
+    {%for q in public%}
     <div class="card-grid-space">
 
         {%if author%}
@@ -112,7 +113,40 @@
     </div>
     {%endfor%}
 </section>
-<h2>Attempted Quizzes</h2>
+</div>
+{%if author%}
+<div class="gradient-border">
+<h2 class='ml-5'>Private Quizzes</h2>
+<section class="cards-wrapper">
+
+    {%for q in private%}
+    <div class="card-grid-space">
+
+        {%if author%}
+        <a href="{%url 'quiz:update-quiz' q.slug%}" class="update">Update</a>
+        {%else%}
+        <a href="{%url 'quiz:quizz' q.slug%}" class="update">Take Quiz</a>
+        {%endif%}
+        <a class="card" style="&#45;&#45;bg-img: url({{q.bg_pic.url}})">
+            <div>
+                <h3>{{q.title}}</h3>
+                <div class="tags">
+                    <div class="tag">By {{q.user.username}}</div>
+                    <div class="tag">
+                        {%for i in q.tags.all%}
+                        {{i.name}}
+                        {%endfor%}
+                    </div>
+                </div>
+            </div>
+        </a>
+    </div>
+    {%endfor%}
+</section>
+</div>
+{%endif%}
+<div class="gradient-border">
+<h2 class='ml-5'>Attempted Quizzes</h2>
 <section class="cards-wrapper">
 
     {%for score,quiz in quiz_score%}
@@ -140,6 +174,7 @@
     </div>
     {%endfor%}
 </section>
+</div>
 {%endblock body%}
 {%block js%}
 

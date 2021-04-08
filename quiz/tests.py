@@ -6,7 +6,7 @@ from django.urls import reverse
 class QuizzerTestCase(TestCase):  
     def setUp(self):  
         user=User.objects.create(username='Atufa')
-        x=Quizzer.objects.create(user=user, title="Animal Sounds",reattempt=False) #tags=['lion','cat']
+        x=Quizzer.objects.create(user=user, title="Animal Sounds",reattempt=False,private=True) #tags=['lion','cat']
         x.tags.add('lion','tiger')
         x.save()
         y=Questions.objects.create(
@@ -27,18 +27,17 @@ class QuizzerTestCase(TestCase):
             option_4="leopard",
             answer=3
         )
-    
-        # event = baker.make(Quizzer, title="Animal Sounds")
     def test_quiz_created(self):
         lion = Quizzer.objects.get(title="Animal Sounds")
         x = Questions.objects.get(question='whose sound is this?..meow..')
         self.assertEqual(lion.slug, "animal-sounds")
         self.assertEqual(lion.question_count, 2)
-        self.assertEqual(lion.all_tags, ["lion",'tiger'])
+        self.assertEqual(sorted(lion.all_tags), sorted(['lion','tiger']))
         self.assertEqual(str(lion), "Animal Sounds")
         self.assertEqual(x.slug, "whose-sound-is-thismeow")
         self.assertEqual(str(x), "whose sound is this?..meow..")
-        
+    
+    
 
 class TestCreateQuizView(TestCase):
     def test_anonymous_cannot_create_edit__quiz(self):
@@ -69,16 +68,19 @@ class TestQuizCreateForm(TestCase):
             "quizz_question-1-option_3":"Rat",
             "quizz_question-1-option_4":"Lion",
             "quizz_question-1-answer":"4",
+            "private":"checked",
+
         }
         response = self.client.post("/quiz/add/", data=data)
         self.assertEqual(Quizzer.objects.count(), 1)
         self.assertEqual(response.status_code, 302)
         self.assertRedirects(response, "/quizzes/")
-# class TestQuizViews(TestCase):
-#     def test_add_quiz(self):
-#         w = self.create_whatever()
-#         url = reverse("whatever.views.whatever")
-#         resp = self.client.get(url)
+        
+    def test_private_quizzes(self):
+        self.client.logout()
+        user=User.objects.create(username="Shireen")
+        self.client.force_login(user=user)
+        response = self.client.get('/quiz/animal-sounds/')
+        self.assertEqual(response.status_code, 404)
 
-#         self.assertEqual(resp.status_code, 200)
-#         self.assertIn(w.title, resp.content)
+    

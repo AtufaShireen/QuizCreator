@@ -217,3 +217,15 @@ text-align: right;
 	-webkit-transform: scale3d(9, 9, 1);
 	transform: scale3d(9, 9, 1);
 }
+.gradient-border {
+  
+  margin: 1rem;
+  border-width: 3px;
+  border-style: solid;
+  border-image: 
+    linear-gradient(
+      to bottom, 
+      red, 
+      rgba(0, 0, 0, 0)
+    ) 1 100%;
+}
