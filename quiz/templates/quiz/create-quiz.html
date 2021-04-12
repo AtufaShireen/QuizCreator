@@ -2,220 +2,306 @@
 {%load static%}
 {%block css%}
 <style type="text/css">
-  .spacer {
-    margin-top: 25px;
-  }
+    .spacer {
+        margin-top: 25px;
+    }
 
-  input {
-    border-top: 0;
-    border-right: 0;
-  }
+    input {
+        border-top: 0;
+        border-right: 0;
+    }
 
-  .question {
-    height: auto;
-    width: 500px;
+    .question {
+        display: grid;
+        height: auto;
+        width: 500px;
 
-  }
+    }
+
+
+    .form-row {
+        display: block;
+    }
 </style>
 
 {%endblock css%}
+{%load widget_tweaks%}
 {%block body%}
 <div class="container">
-  <div class="row spacer"></div>
-  <div class="row offset-2">
-    <div class="col-12">
-      <form class="form-horizontal" method="POST" action="" enctype="multipart/form-data">
-        {% csrf_token %}
-        <div class="row spacer">
-          <div class="col-2">
-            {{quiz_form.non_field_errors}}
-            {{quiz_form.errors}}
-            <label>{{quiz_form.title.label}}</label>
-          </div>
-          <div class="col-4">
-            <div class="input-group">
-              {{quiz_form.title}}
+    <div class="row spacer"></div>
+    <div class="row">
+        <div class="col-12">
+            <form class="form-horizontal" method="POST" action="" enctype="multipart/form-data">
+                {% csrf_token %}
+                {%for i in quiz_form.non_field_errors%}
+                            <li>{{i}}</li>
+                          {%endfor%}
+                        </ul>
+                {%for error in form.errors%}
+                    {{error}}
+                {%endfor%}
+                <div class="row spacer">
+                    <div class="col-2">
+                        
+                        <label>{{quiz_form.title.label}}</label>
+                    </div>
+                    <div class="col-4">
+                        <div class="input-group">
+                            {{quiz_form.title}}
 
-            </div>
-          </div>
-        </div>
-        <div class="row spacer">
-          <div class="col-2">
-            <label>{{quiz_form.tags.label}}</label>
-          </div>
-          <div class="col-4">
-            <div class="input-group">
-              {{quiz_form.tags}}
-            </div>
-          </div>
-        </div>
-        <div class="row spacer">
-          <div class="col-2">
-            <label>{{quiz_form.bg_pic.label}}</label>
-          </div>
-          <div class="col-4">
-            <div class="input-group">
-              {{quiz_form.bg_pic}}
-            </div>
-          </div>
-        </div>
-        <div class="row spacer">
-          <div class="col-2">
-            <label>{{quiz_form.reattempt.label}}</label>
-          </div>
-          <div class="col-4">
-            <div class="input-group">
-              {{quiz_form.reattempt}}
-            </div>
-          </div>
-        </div>
-        <div class="row spacer">
-          <div class="col-2">
-            <label>{{quiz_form.private.label}}</label>
-          </div>
-          <div class="col-4">
-            <div class="input-group">
-              {{quiz_form.private}}
-            </div>
-          </div>
-        </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="row spacer">
+                    <div class="col-2">
+                        <label>{{quiz_form.tags.label}}</label>
+                    </div>
+                    <div class="col-4">
+                        <div class="input-group">
+                            {{quiz_form.tags}}
+                        </div>
+                    </div>
+                </div>
+                <div class="row spacer">
+                    <div class="col-2">
+                        <label>{{quiz_form.bg_pic.label}}</label>
+                    </div>
+                    <div class="col-4">
+                        <div class="input-group">
+                            {{quiz_form.bg_pic}}
+                        </div>
+                    </div>
+                </div>
+                <div class="row spacer">
+                    <div class="col-2">
+                        <label>{{quiz_form.reattempt.label}}</label>
+                    </div>
+                    <div class="col-4">
+                        <div class="input-group">
+                            {{quiz_form.reattempt}}
+                        </div>
+                    </div>
+                    <!-- </div>
+        <div class="row spacer"> -->
+                    <div class="col-2">
+                        <label>{{quiz_form.private.label}}</label>
+                    </div>
+                    <div class="col-4">
+                        <div class="input-group">
+                            {{quiz_form.private}}
+                        </div>
+                    </div>
+                </div>
 
-        {{ quest_form.management_form }}
-        <div class="input-group-append">
-          <button class="btn btn-success add-form-row">Add Questions</button>
+                {{ quest_form.management_form }}
+                <div id="item-template" style="display: none;">
 
+                    <div class="form-row">
+
+                        <div class="col-2">
+
+
+
+                            <label>Question</label>
+                        </div>
+                        <div class="col-8">
+                            <div class="input-group question">
+                                <input type="text" name="quizz_question-__prefix__-question" maxlength="1024"
+                                    id="id_quizz_question-__prefix__-question">
+
+                            </div>
+                        </div>
+                        <div class="row spacer">
+
+                            <div class="col-2">
+                                <label>Option 1</label>
+                            </div>
+                            <div class="col-4">
+                                <div class="input-group">
+                                    <input type="text" name="quizz_question-__prefix__-option_1" maxlength="1024"
+                                        id="id_quizz_question-__prefix__-option_1">
+                                </div>
+                            </div>
+                            <div class="col-2">
+                                <label>Option 2</label>
+                            </div>
+                            <div class="col-4">
+                                <div class="input-group">
+                                    <input type="text" name="quizz_question-__prefix__-option_2" maxlength="1024"
+                                        id="id_quizz_question-__prefix__-option_2">
+                                </div>
+                            </div>
+                            <div class="col-2">
+                                <label>Option 3</label>
+                            </div>
+                            <div class="col-4">
+                                <div class="input-group">
+                                    <input type="text" name="quizz_question-__prefix__-option_3" maxlength="1024"
+                                        id="id_quizz_question-__prefix__-option_3">
+                                </div>
+                            </div>
+                            <div class="col-2">
+                                <label>Option 4</label>
+                            </div>
+                            <div class="col-4">
+                                <div class="input-group">
+                                    <input type="text" name="quizz_question-__prefix__-option_4" maxlength="1024"
+                                        id="id_quizz_question-__prefix__-option_4">
+                                </div>
+                            </div>
+                            <div class="col-2">
+                                <label>Correct option</label>
+                            </div>
+                            <div class="col-4">
+                                <div class="input-group">
+                                    <input type="number" name="quizz_question-__prefix__-answer" value="1" min="0"
+                                        id="id_quizz_question-__prefix__-answer">
+                                </div>
+                            </div>
+                            <div class="col-2">
+                                <label>Delete</label>
+                            </div>
+                            <div class="col-4">
+                                <div class="input-group">
+                                   <input type="checkbox" name="quizz_question-__prefix__-DELETE" class="remove-form"
+                                        id="id_quizz_question-__prefix__-DELETE">
+                                </div>
+                            </div>
+                        </div>
+                        <br>
+                    </div>
+
+
+                </div>
+
+                <div class="input-group-append">
+                    <input class="btn btn-success" id='add-form-row' type="button" value="Add Question">
+                </div>
+                <br>
+                <div id="items-form-container">
+                  <ul>
+                  {%for i in quest_form.non_form_errors%}
+                            <li>{{i}}</li>
+                          {%endfor%}
+                        </ul>
+                    {% for form in quest_form %}
+
+                    <div class="form-row">
+                        {{form.errors}}
+                        <div class="col-2">
+                          
+                        
+                            
+                            
+                            <label>{{form.question.label}}</label>
+                        </div>
+                        <div class="col-8">
+                            <div class="input-group question">
+                                {{form.question}}
+
+                            </div>
+                        </div>
+                        <div class="row spacer">
+
+                            <div class="col-2">
+                                <label>{{form.option_1.label}}</label>
+                            </div>
+                            <div class="col-4">
+                                <div class="input-group">
+                                    {{form.option_1}}
+                                </div>
+                            </div>
+                            <div class="col-2">
+                                <label>{{form.option_2.label}}</label>
+                            </div>
+                            <div class="col-4">
+                                <div class="input-group">
+                                    {{form.option_2}}
+                                </div>
+                            </div>
+                            <div class="col-2">
+                                <label>{{form.option_3.label}}</label>
+                            </div>
+                            <div class="col-4">
+                                <div class="input-group">
+                                    {{form.option_3}}
+                                </div>
+                            </div>
+                            <div class="col-2">
+                                <label>{{form.option_4.label}}</label>
+                            </div>
+                            <div class="col-4">
+                                <div class="input-group">
+                                    {{form.option_4}}
+                                </div>
+                            </div>
+                            <div class="col-2">
+                                <label>{{form.answer.label}}</label>
+                            </div>
+                            <div class="col-4">
+                                <div class="input-group">
+                                    {{form.answer}}
+                                </div>
+                            </div>
+                            <div class="col-2">
+                                <label>{{form.DELETE.label}}</label>
+                            </div>
+                            <div class="col-4">
+                                <div class="input-group">
+                                    {{form.DELETE|add_class:'remove-form'}}
+                                </div>
+                            </div>
+                        </div>
+                        <br>
+                    </div>
+                    {% endfor %}
+                    <div id="add-here">
+
+                    </div>
+                </div>
+                <div class="row spacer">
+                    <div class="col-4 offset-2">
+                        <button type="submit" class="btn btn-block btn-primary">Create</button>
+                    </div>
+                </div>
+            </form>
         </div>
-        <br>
-        {% for form in quest_form %}
-        <div class="form-row">
-
-          <div class="col-2">
-            {{form.non_field_errors}}
-            {{form.errors}}
-            {{form.id}}
-            <label>{{form.question.label}}</label>
-          </div>
-          <div class="col-8">
-            <div class="input-group question">
-              {{form.question}}
-
-            </div>
-          </div>
-          <div class="row spacer">
-
-            <div class="col-2">
-              <label>{{form.option_1.label}}</label>
-            </div>
-            <div class="col-4">
-              <div class="input-group">
-                {{form.option_1}}
-              </div>
-            </div>
-            <div class="col-2">
-              <label>{{form.option_2.label}}</label>
-            </div>
-            <div class="col-4">
-              <div class="input-group">
-                {{form.option_2}}
-              </div>
-            </div>
-            <div class="col-2">
-              <label>{{form.option_3.label}}</label>
-            </div>
-            <div class="col-4">
-              <div class="input-group">
-                {{form.option_3}}
-              </div>
-            </div>
-            <div class="col-2">
-              <label>{{form.option_4.label}}</label>
-            </div>
-            <div class="col-4">
-              <div class="input-group">
-                {{form.option_4}}
-              </div>
-            </div>
-            <div class="col-2">
-              <label>{{form.answer.label}}</label>
-            </div>
-            <div class="col-4">
-              <div class="input-group">
-                {{form.answer}}
-              </div>
-            </div>
-            <div class="col-2">
-              <label>{{form.DELETE.label}}</label>
-            </div>
-            <div class="col-4">
-              <div class="input-group">
-                {{form.DELETE}}
-              </div>
-            </div>
-          </div>
-          <br>
-        </div>
-        {% endfor %}
-        <div class="row spacer">
-          <div class="col-4 offset-2">
-            <button type="submit" class="btn btn-block btn-primary">Create</button>
-          </div>
-        </div>
-      </form>
     </div>
-  </div>
 </div>
 
 {%endblock body%}
 {%block js%}
-function updateElementIndex(el, prefix, ndx) {
-var id_regex = new RegExp('(' + prefix + '-\\d+)');
-var replacement = prefix + '-' + ndx;
-if ($(el).attr("for")) $(el).attr("for", $(el).attr("for").replace(id_regex, replacement));
-if (el.id) el.id = el.id.replace(id_regex, replacement);
-if (el.name) el.name = el.name.replace(id_regex, replacement);
-}
-function cloneMore(selector, prefix) {
-prefix = 'quizz_question'
-var newElement = $(selector).clone(true);
-var total = $('#id_' + prefix + '-TOTAL_FORMS').val();
-newElement.find(':input:not([type=button]):not([type=submit]):not([type=reset])').each(function () {
-var name = $(this).attr('name')
-if (name) {
-name = name.replace('-' + (total - 1) + '-', '-' + total + '-');
-var id = 'id_' + name;
-$(this).attr({ 'name': name, 'id': id }).val('').removeAttr('checked');
-}
+
+
+$(document).ready(function(){
+
+    
+    $('#add-form-row').click(function (ev) {
+    console.log("pressed");
+    ev.preventDefault();
+    var count = $('#id_quizz_question-TOTAL_FORMS').val();
+    console.log('forma',count);
+    var tmplMarkup = $('#item-template').html();
+    var compiledTmpl = tmplMarkup.replace(/__prefix__/g, count);
+    $('div#items-form-container').append(compiledTmpl);
+
+    $('#id_quizz_question-TOTAL_FORMS').val(parseInt(count) + 1);
+
+    });
+    
+
+        $("input[type='checkbox']").click(function(){
+          
+            var n = $( "input[class='remove-form']:checked" ).length;
+            console.log('n here',n)
+        
+             $("input[class='remove-form']:checked").each(function(){
+             
+                // $(this).parents('.form-row').remove();
+                console.log('removed');
+                })
+            })	
+        
+   
 });
-newElement.find('label').each(function () {
-var forValue = $(this).attr('for');
-if (forValue) {
-forValue = forValue.replace('-' + (total - 1) + '-', '-' + total + '-');
-$(this).attr({ 'for': forValue });
-}
-});
-total++;
-$('#id_' + prefix + '-TOTAL_FORMS').val(total);
-$(selector).after(newElement);
-var conditionRow = $('.form-row:not(:last)');
-conditionRow.find('.btn.add-form-row')
-.removeClass('btn-success').addClass('btn-danger')
-.removeClass('add-form-row').addClass('remove-form-row')
-.html('-');
-return false;
-}
-function deleteForm(prefix, btn) {
-prefix = 'quizz_question'
-var total = parseInt($('#id_' + prefix + '-TOTAL_FORMS').val());
-if (total > 1) {
-btn.closest('.form-row').remove();
-var forms = $('.form-row');
-$('#id_' + prefix + '-TOTAL_FORMS').val(forms.length);
-for (var i = 0, formCount = forms.length; i < formCount; i++) {
-   $(forms.get(i)).find(':input').each(function () {
-     
-  updateElementIndex(this, prefix, i); }); } } return false; } $(document).on('click', '.add-form-row' , function (e) {
-  e.preventDefault(); cloneMore('.form-row:last', 'form' ); return false; }); $(document).on('click', '.remove-form-row'
-  , function (e) { e.preventDefault(); deleteForm('form', $(this)); return false; }); 
-  
-  
-  {%endblock js%}
+{%endblock js%}

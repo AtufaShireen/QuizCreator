@@ -12,4 +12,4 @@ class TestCreateQuizView(TestCase):
         user=User.objects.create(username="Atufaaa")
         self.client.force_login(user=user)
         response = self.client.get(reverse("login"),follow_redirects=True)
-        self.assertRedirects(response, "/quizzes/")
+        self.assertRedirects(response, "/")

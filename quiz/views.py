@@ -1,6 +1,7 @@
 from django.shortcuts import render, HttpResponseRedirect, redirect,HttpResponse,get_object_or_404
 from django.views.generic import ListView, CreateView, DeleteView, DetailView, UpdateView
 from .models import Questions, Quizzer,QuizScore
+from django.contrib.auth.models import User
 from .serializers import  QuestionSerializer,UserAttemptedQuizes ,QuizzerSerializer,ProfileSerializer
 from rest_framework.generics import ListAPIView
 from rest_framework.views import APIView, Response
@@ -56,7 +57,8 @@ def edit_quiz_form(request, quiz_tit=None):
             i.quizz=quiz_instance        
         for i in instance:
             i.save()
-        return redirect('/quizzes/')
+        return redirect('quiz:quizzes')
+    
   
     return render(request, 'quiz/create-quiz.html', {'quest_form': ques_fromset,'quiz_form':quiz_form}) #create-quiz
 
@@ -73,6 +75,9 @@ def QuizzView(request,slug): # modify to check 404 and private
     questions=quiz.all_question
     context={'quiz':quiz,'questions':questions}
     if request.method=='POST':
+        if len(request.POST)!=len(questions)+1:
+            messages.warning(request, 'Answer all the questions')
+            return redirect('quiz:quizz',slug)
         counter=0
         for i in questions:
             if i.answer==int(request.POST[i.question]):
@@ -95,12 +100,14 @@ def QuizzView(request,slug): # modify to check 404 and private
 
 def Quizzes(request):
     if request.user.is_authenticated:
-        query=Quizzer.objects.filter(Q(private=False)&~Q(user=request.user))
+        query=Quizzer.objects.filter(Q(private=False)&~Q(user=request.user)) # remove attempted quizzes
+
     else:
         query=Quizzer.objects.filter(Q(private=False))
     Filter=QuizFilter(request.GET,queryset=query)
     context={'quizzes':query,'filter':Filter}
     return render(request,'quiz/quizzes.html',context)
+
 
 class QuizzesApiView(ListAPIView):
     permission_classes = [IsAdminUser]
@@ -135,7 +142,8 @@ class UserProfileApiView(APIView):
         user=kwargs.pop('username')
         try:
             user=User.objects.get(username=user)
-        except UserDoesnotExists:
+        except User.DoesnotExists:
+            print('dgj')
             raise Http404
         attempted = QuizScore.objects.filter(user=user)
         attempt_serializer = UserAttemptedQuizes(attempted, many=True)
@@ -148,6 +156,7 @@ class UserProfileApiView(APIView):
                 quizzes=public[0]
         except:
             quizzes=None
+        
         prof_serializer=ProfileSerializer(quizzes)
         
         return Response({

@@ -1,4 +1,10 @@
 
+.tagg{
+  background-color: cadetblue;
+  border: 2px solid cadetblue;
+  border-radius: 7px;
+  margin: 3px;
+}
 form{
     display: flex;
     flex-direction: row-reverse;

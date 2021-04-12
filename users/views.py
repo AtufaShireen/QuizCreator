@@ -30,14 +30,20 @@ def profile(request,view_user=None):
             user=User.objects.get(username=view_user)
         except User.DoesNotExist:
             messages.warning(request, f'User Doesnot Exists')
-            raise Http404()
+            raise Http404()        
         x = Quizzer.objects.filter(Q(user__username=view_user),Q(private=False))
-        t=QuizScore.objects.filter(score__gte=1)
+        tags=x[0].user_tags()
+        t=QuizScore.objects.filter(Q(score__gte=1),Q(user=user))
         score=[(y.score,y.quiz) for y in t]
-        context = {'quiz_score':score,'created_quizzes':x,'author':False,'user':user} #,'quizzes':x
+        context = {'quiz_score':score,'public':x,'author':False,'user':user,'tags_used':tags} #,'quizzes':x
         return render(request, 'users/profile.html', context)
+
     private = Quizzer.objects.filter(Q(user=request.user),Q(private=True))
     public = Quizzer.objects.filter(Q(user=request.user),Q(private=False))
+    try:
+        tags=public[0].user_tags()
+    except:
+        tags=[]
     t=QuizScore.objects.filter(score__gte=1)
     score=[(y.score,y.quiz) for y in t]
     if request.method == 'POST':
@@ -55,7 +61,7 @@ def profile(request,view_user=None):
         p_form = ProfileUpdateForm(instance=request.user.profile)
         u_form = UserUpdateForm(instance=request.user)
 
-    context = {'u_form': u_form,'p_form': p_form,'quiz_score':score,'public':public,'private':private,'author':True}
+    context = {'u_form': u_form,'p_form': p_form,'quiz_score':score,'public':public,'private':private,'author':True,'tags_used':tags}
     return render(request, 'users/profile.html', context)
 
 # def viewprofile(request,username):
