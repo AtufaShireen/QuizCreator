@@ -15,9 +15,10 @@ class QuizzerSerializer(serializers.ModelSerializer):
     
     n_questions = serializers.CharField(source='question_count', read_only=True)
     tags=serializers.JSONField(source='all_tags', read_only=True)
+    attempted_by=serializers.CharField(source='attempters', read_only=True)
     class Meta:
         model = Quizzer
-        fields = ['title','n_questions','tags']
+        fields = ['title','n_questions','tags','attempted_by']
         depth=1
        
 class QuestionSerializer(serializers.ModelSerializer):
@@ -31,4 +32,3 @@ class UserAttemptedQuizes(serializers.ModelSerializer):
         model=QuizScore
         fields=['title','score']
 
-#apple.tags.slugs()

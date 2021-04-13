@@ -100,7 +100,13 @@ def QuizzView(request,slug): # modify to check 404 and private
 
 def Quizzes(request):
     if request.user.is_authenticated:
-        query=Quizzer.objects.filter(Q(private=False)&~Q(user=request.user)) # remove attempted quizzes
+        try: 
+            ats=QuizScore.objects.filter(user=request.user).values_list('quiz_id') # remove attempted quizzes
+            query=Quizzer.objects.filter(Q(private=False)&~Q(user=request.user)&~Q(id__in=ats)) 
+        except:
+            x= Quizzer.objects.prefetch_related('score_quiz').filter(user=request.user)
+            query=Quizzer.objects.filter(Q(private=False)&~Q(user=request.user)) 
+        
 
     else:
         query=Quizzer.objects.filter(Q(private=False))

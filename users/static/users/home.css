@@ -28,7 +28,12 @@ a {
   margin: 0 auto;
   width: max-content;
 }
-
+.attempters{
+  position: absolute;
+  color: blueviolet;
+  z-index: 5;
+  padding: 3px 1px 1px 11px;
+}
 .card {
   font-family: 'Heebo';
   --bg-filter-opacity: 0.5;
@@ -140,7 +145,8 @@ a {
 .update{
   position: absolute;
     z-index: 5;
-    padding: 8px 8px 8px 8px;
+    left: 29%;
+    top: 19%;
 }
 .reattempt{
   position: absolute;

@@ -166,16 +166,13 @@
             <a href="{%url 'quiz:quizz' quiz.slug%}" class="update">Take Quiz</a>
             {%endcomment%}
             {%endif%}
-            {%if author and quiz.reattempt%}
-            <span><a href="/quiz/{{quiz.slug}}" class='reattempt'> Reattempt</a></span>
-            {%endif%}
 
             <a class="card" href="#" style="&#45;&#45;bg-img: url({{q.bg_pic.url}})">
                 <div>
                     <h3>{{quiz.title}}</h3>
                     <div class="tags">
                         <div class="tag">By {{quiz.user.username}}</div>
-                        <div class="tag">Your Score: {{score}}</div>
+                        <div class="tag">Score was: {{score}}</div>
                     </div>
                 </div>
             </a>

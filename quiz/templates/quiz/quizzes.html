@@ -22,17 +22,19 @@
                 {%for q in filter.qs%}
                 <div class="card-grid-space">
                     {%if user.is_authenticated%}
-                        {%if author%}
-                        <a href="{%url 'quiz:update-quiz' q.slug%}" class="update">Update</a>
-                        {%else%}
-                        <a href="{%url 'quiz:quizz' q.slug%}" class="update">Take Quiz</a>
-                        {%endif%}
+                    <div class='attempters'>attempted by {{q.attempters}}</div>
+                    {%if author%}
+                    <a href="{%url 'quiz:update-quiz' q.slug%}" class="update">Update</a>
+                    {%else%}
+                    <a href="{%url 'quiz:quizz' q.slug%}" class="update">Take Quiz</a>
                     {%endif%}
-                    <a class="card" style="&#45;&#45;bg-img: url({{q.bg_pic.url}})">
+                    {%endif%}
+                    <div class="card" style="&#45;&#45;bg-img: url({{q.bg_pic.url}})">
                         <div>
                             <h3>{{q.title}}</h3>
                             <div class="tags">
-                                <div class="tag">By {{q.user.username}}</div>
+                                <div class="tag">By <a href="{%url 'view-profile' q.user.username%}">{{q.user.username}}</a></div>
+                                <br>
                                 <div class="tag">
                                     {%for i in q.tags.all%}
                                     {{i.name}}
@@ -40,7 +42,7 @@
                                 </div>
                             </div>
                         </div>
-                    </a>
+                    </div>
                 </div>
                 {%endfor%}
             </section>

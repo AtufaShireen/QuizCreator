@@ -39,7 +39,11 @@ class Quizzer(models.Model):
     def all_tags(self): # all tags of this quiz
         return [i.name for i in self.tags.all()]
 
-    def user_tags(self):
+    @property 
+    def attempters(self): # numbers of users atempted this quiz
+        return self.score_quiz.count()
+
+    def user_tags(self): # unique tags used ny the creator
         g=[]
         for i in self.user.user_quiz.all():
             for j in i.all_tags:
@@ -49,6 +53,9 @@ class Quizzer(models.Model):
     @property
     def question_count(self): # number of questions on the quiz
         return self.quizz_question.count()
+    
+    def all_attempters(self):
+        return self.score_quiz.all()
 
     def get_absolute_url(self):
         return reverse('quiz:quizz',kwargs={'slug':self.slug})
@@ -58,7 +65,7 @@ class Quizzer(models.Model):
         super(Quizzer, self).save(*args, **kwargs)
 
 # class Usertags(models.Model):
-    
+    '''works with signals but upgrade to python 3.9 for JSOn Field or update sql'''
 #     user = models.OneToOneField(User,on_delete=models.CASCADE,related_name="user_tags")
 #     tags=models.JSONField(null=True) upgrade to python 3.9
 
@@ -82,8 +89,8 @@ class Questions(models.Model):
         super(Questions, self).save(*args, **kwargs)
 
 class QuizScore(models.Model):
-    user=models.ForeignKey(User, on_delete=models.CASCADE)
-    quiz=models.ForeignKey(Quizzer, on_delete=models.CASCADE,related_name='score_quiz')
+    user=models.ForeignKey(User, on_delete=models.CASCADE) #could be onetoone as well
+    quiz=models.ForeignKey(Quizzer, on_delete=models.CASCADE,related_name='score_quiz') 
     score=models.IntegerField(default=0)
     @property
     def quizzie_score(self): # title of the score

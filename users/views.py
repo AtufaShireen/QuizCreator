@@ -33,7 +33,7 @@ def profile(request,view_user=None):
             raise Http404()        
         x = Quizzer.objects.filter(Q(user__username=view_user),Q(private=False))
         tags=x[0].user_tags()
-        t=QuizScore.objects.filter(Q(score__gte=1),Q(user=user))
+        t=QuizScore.objects.filter(user=user)
         score=[(y.score,y.quiz) for y in t]
         context = {'quiz_score':score,'public':x,'author':False,'user':user,'tags_used':tags} #,'quizzes':x
         return render(request, 'users/profile.html', context)
@@ -44,7 +44,7 @@ def profile(request,view_user=None):
         tags=public[0].user_tags()
     except:
         tags=[]
-    t=QuizScore.objects.filter(score__gte=1)
+    t=QuizScore.objects.filter(user=request.user)
     score=[(y.score,y.quiz) for y in t]
     if request.method == 'POST':
         u_form = UserUpdateForm(request.POST, instance=request.user)
