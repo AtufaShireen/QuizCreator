@@ -9,10 +9,10 @@
 {%block body%}
 
 <div class="tags">
-    <div class="tag">Tags used by {{user.usename}}: </div>
+    <div class="tag">Tags used by {{user.username}}: </div>
     {%for i in tags_used%}
-    <div class="tagg" style="display: inline;">      
-        <a href="/?tags__name={{i}}">#{{i}} </a>     
+    <div class="tagg" style="display: inline;">
+        <a href="/?tags__name={{i}}">#{{i}} </a>
     </div>
     {%endfor%}
 </div>
@@ -101,6 +101,31 @@
 
             {%if author%}
             <a href="{%url 'quiz:update-quiz' q.slug%}" class="update">Update</a>
+
+            <button type="button" class="btn" data-toggle="modal" data-target="#exampleModalCenter">
+                Share
+              </button>
+              
+
+              <div class="modal fade" id="exampleModalCenter" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
+                <div class="modal-dialog modal-dialog-centered" role="document">
+                  <div class="modal-content"  style="background-color: aquamarine;">
+                    <div class="modal-header">
+                      <h5 class="modal-title" id="exampleModalLongTitle">Share Your Quiz With Friends</h5>
+                      <small>    No registration required!</small>
+                      <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                      </button>
+                    </div>
+                    <div class="modal-body">
+                        Shareable link for your Quiz-
+                        <br>
+                        <a href="{%url 'quiz:share-view' q.user.username,q.slug,id=q.id" style="word-wrap: break-word;">
+                            https://Quizzer.com/quiz/shared/{{q.user.username}}/{{q.slug}}/{{q.id}}
+                    </div>
+                  </div>
+                </div>
+              </div>
             {%else%}
             <a href="{%url 'quiz:quizz' q.slug%}" class="update">Take Quiz</a>
             {%endif%}

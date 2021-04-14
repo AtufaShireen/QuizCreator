@@ -16,6 +16,29 @@ def error_404(request,exception):
     data={}
     return render(request,'quiz/404.html', data)
 
+def ShareQuizzView(request,id,username,slug): # modify to check 404 and private
+    try:
+        quiz=Quizzer.objects.get(slug=slug,user__username=username,id=id)
+        if request.user!=quiz.user and quiz.private==True:
+            raise Http404()
+    except Quizzer.DoesNotExist:
+        messages.warning(request,'Quiz Does not exists')
+        raise Http404()
+    questions=quiz.all_question
+    context={'quiz':quiz,'questions':questions}
+    if request.method=='POST':
+        if len(request.POST)!=len(questions)+1:
+            messages.warning(request, 'Answer all the questions')
+            return redirect('quiz:quizz',slug)
+        counter=0
+        for i in questions:
+            if i.answer==int(request.POST[i.question]):
+                counter+=1
+            else:
+                pass
+        messages.success(request, f'Your Score was {counter}')
+        # return redirect('quiz:quizzes')
+    return render(request,'quiz/quiz.html',context=context)
 @login_required
 def add_quiz_form(request): 
     quiz_form=QuizForm(request.POST or None,request.FILES or None)
@@ -101,7 +124,7 @@ def QuizzView(request,slug): # modify to check 404 and private
 def Quizzes(request):
     if request.user.is_authenticated:
         try: 
-            ats=QuizScore.objects.filter(user=request.user).values_list('quiz_id') # remove attempted quizzes
+            ats=QuizScore.objects.filter(user=request.user).values_list('quiz_id') # to remove attempted quizzes
             query=Quizzer.objects.filter(Q(private=False)&~Q(user=request.user)&~Q(id__in=ats)) 
         except:
             x= Quizzer.objects.prefetch_related('score_quiz').filter(user=request.user)

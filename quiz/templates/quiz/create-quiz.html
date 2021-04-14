@@ -33,12 +33,15 @@
         <div class="col-12">
             <form class="form-horizontal" method="POST" action="" enctype="multipart/form-data">
                 {% csrf_token %}
+                {% for hidden in quiz_form.hidden_fields %}
+                    {{ hidden }}
+                {% endfor %}
                 {%for i in quiz_form.non_field_errors%}
-                            <li>{{i}}</li>
+                            herer<li>{{i}}</li>
                           {%endfor%}
                         </ul>
                 {%for error in form.errors%}
-                    {{error}}
+                    here{{error}}
                 {%endfor%}
                 <div class="row spacer">
                     <div class="col-2">
@@ -93,7 +96,7 @@
                     </div>
                 </div>
 
-                {{ quest_form.management_form }}
+                
                 <div id="item-template" style="display: none;">
 
                     <div class="form-row">
@@ -178,6 +181,10 @@
                     <input class="btn btn-success" id='add-form-row' type="button" value="Add Question">
                 </div>
                 <br>
+                {{ quest_form.management_form }}
+                {% for hidden in quest_form.hidden_fields %}
+                    herer{{ hidden }}
+                {% endfor %}
                 <div id="items-form-container">
                   <ul>
                   {%for i in quest_form.non_form_errors%}
@@ -185,7 +192,7 @@
                           {%endfor%}
                         </ul>
                     {% for form in quest_form %}
-
+                        hererer{{form.id}}
                     <div class="form-row">
                         {{form.errors}}
                         <div class="col-2">
@@ -255,9 +262,7 @@
                         <br>
                     </div>
                     {% endfor %}
-                    <div id="add-here">
-
-                    </div>
+     
                 </div>
                 <div class="row spacer">
                     <div class="col-4 offset-2">

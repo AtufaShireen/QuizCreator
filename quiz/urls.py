@@ -1,11 +1,12 @@
 from django.urls import path, include
 from .views import QuizzView, Quizzes,edit_quiz_form,add_quiz_form,QuizzApiView,UserProfileApiView, \
-  QuizzesApiView,UserQuizzesApiView
+  QuizzesApiView,UserQuizzesApiView,ShareQuizzView
 app_name='quiz'
 urlpatterns = [
     path('quiz/add/',add_quiz_form, name='create-quiz'),
     path('quiz/edit/<str:quiz_tit>/', edit_quiz_form, name='update-quiz'),
     path('', Quizzes, name='quizzes'),
+    path('quiz/shared/<slug:username>/<slug:quiz>/<str:id>/',ShareQuizzView,name='share-view'),
     path('quiz/<str:slug>/', QuizzView, name='quizz'),
     path('api-auth/',include('rest_framework.urls')),
     path('api-auth/quizzes/', QuizzesApiView.as_view(), name='api-quizzes'),
