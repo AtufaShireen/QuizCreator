@@ -1,7 +1,8 @@
 *.pyc  
 *~  
 __pycache__  
-venv  
+venv
+.env  
 db.sqlite3  
 /static/  
 .idea

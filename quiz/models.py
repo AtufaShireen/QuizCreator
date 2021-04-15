@@ -8,6 +8,7 @@ from taggit.managers import TaggableManager
 from taggit.models import GenericUUIDTaggedItemBase, TaggedItemBase
 import uuid
 
+
 class UUIDTaggedItem(GenericUUIDTaggedItemBase, TaggedItemBase):
     class Meta:
         verbose_name = _("Tag")
@@ -69,7 +70,10 @@ class Quizzer(models.Model):
 #     user = models.OneToOneField(User,on_delete=models.CASCADE,related_name="user_tags")
 #     tags=models.JSONField(null=True) upgrade to python 3.9
 
-
+class AnonymousUsersData(models.Model):
+    user=models.CharField(max_length=25)
+    quiz=models.ForeignKey(Quizzer,on_delete=models.CASCADE)
+    score=models.IntegerField(default=0)
 class Questions(models.Model):
     quizz = models.ForeignKey('Quizzer',on_delete=models.CASCADE,related_name='quizz_question')
     slug = models.SlugField(null=True, blank=True)

@@ -6,55 +6,59 @@
 {%block body%}
 
 <div class="container">
-    <div class="heading">
-      <h1 class="heading__text">{{quiz.title}}</h1>
-      <span>Total {{quiz.question_count}} Questions</span>
+  <div class="heading">
+    <h1 class="heading__text">{{quiz.title}}</h1>
+    <span>Total {{quiz.question_count}} Questions</span>
     </br>
-     <a href="{%url 'view-profile' quiz.user.username%}"><h5>By {{quiz.user.username}}</h5></a>
-      <br/>
-    </div>
-
-    
-
-      <form class="quiz-form" method="POST">
-        {%csrf_token%}
-        {%for i in questions%}
-        <div class="quiz-form__quiz">
-          <p class="quiz-form__question">
-            {{forloop.counter}}. {{i.question}}
-            
-          </p>
-          <label class="quiz-form__ans" for="q1_{{i.id}}">
-            <input type="radio" name="{{i.question}}" id="q1_{{i.id}}" value="1" />
-            <span class="design"></span>
-            <span class="text">{{i.option_1}}</span>
-          </label>
-
-          <label class="quiz-form__ans" for="q2_{{i.id}}">
-            <input type="radio" name="{{i.question}}" id="q2_{{i.id}}" value="2" />
-            <span class="design"></span>
-            <span class="text">{{i.option_2}}</span>
-          </label>
-
-          <label class="quiz-form__ans" for="q3_{{i.id}}">
-            <input type="radio" name="{{i.question}}" id="q3_{{i.id}}" value="3" />
-            <span class="design"></span>
-            <span class="text">{{i.option_3}}</span>
-          </label>
-
-          <label class="quiz-form__ans" for="q4_{{i.id}}">
-            <input type="radio" name="{{i.question}}" id="q4_{{i.id}}" value="4" />
-            <span class="design"></span>
-            <span class="text">{{i.option_4}}</span>
-          </label>
-
-        </div>
-
-
-
-        {%endfor%}
-        <input class="submit" type="submit" value="Submit" />
-      </form>
-    </div>
+    <a href="{%url 'view-profile' quiz.user.username%}">
+      <h5>By {{quiz.user.username}}</h5>
+    </a>
+    <br />
   </div>
+  <form class="quiz-form" method="POST">
+    {%if shared%}
+    <div class="">
+      <input type="text" required class="input-group" style="max-width:fit-content; margin-left:30%; margin-bottom:22px;" placeholder="     Your Name" >
+    </div>
+    {%endif%}
+    {%csrf_token%}
+    {%for i in questions%}
+    <div class="quiz-form__quiz">
+      <p class="quiz-form__question">
+        {{forloop.counter}}. {{i.question}}
+
+      </p>
+      <label class="quiz-form__ans" for="q1_{{i.id}}">
+        <input type="radio" name="{{i.question}}" id="q1_{{i.id}}" value="1" />
+        <span class="design"></span>
+        <span class="text">{{i.option_1}}</span>
+      </label>
+
+      <label class="quiz-form__ans" for="q2_{{i.id}}">
+        <input type="radio" name="{{i.question}}" id="q2_{{i.id}}" value="2" />
+        <span class="design"></span>
+        <span class="text">{{i.option_2}}</span>
+      </label>
+
+      <label class="quiz-form__ans" for="q3_{{i.id}}">
+        <input type="radio" name="{{i.question}}" id="q3_{{i.id}}" value="3" />
+        <span class="design"></span>
+        <span class="text">{{i.option_3}}</span>
+      </label>
+
+      <label class="quiz-form__ans" for="q4_{{i.id}}">
+        <input type="radio" name="{{i.question}}" id="q4_{{i.id}}" value="4" />
+        <span class="design"></span>
+        <span class="text">{{i.option_4}}</span>
+      </label>
+
+    </div>
+
+
+
+    {%endfor%}
+    <input class="submit" type="submit" value="Submit" />
+  </form>
+</div>
+</div>
 {%endblock%}

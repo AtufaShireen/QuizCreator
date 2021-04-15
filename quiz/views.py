@@ -1,6 +1,6 @@
 from django.shortcuts import render, HttpResponseRedirect, redirect,HttpResponse,get_object_or_404
 from django.views.generic import ListView, CreateView, DeleteView, DetailView, UpdateView
-from .models import Questions, Quizzer,QuizScore
+from .models import Questions, Quizzer,QuizScore,AnonymousUsersData
 from django.contrib.auth.models import User
 from .serializers import  QuestionSerializer,UserAttemptedQuizes ,QuizzerSerializer,ProfileSerializer
 from rest_framework.generics import ListAPIView
@@ -16,28 +16,35 @@ def error_404(request,exception):
     data={}
     return render(request,'quiz/404.html', data)
 
-def ShareQuizzView(request,id,username,slug): # modify to check 404 and private
+def ShareQuizzView(request,id,username,quiz_name): # modify to check 404 and private
     try:
-        quiz=Quizzer.objects.get(slug=slug,user__username=username,id=id)
+        
+        quiz=Quizzer.objects.get(slug=quiz_name,user__username=username,id=id)
         if request.user!=quiz.user and quiz.private==True:
             raise Http404()
     except Quizzer.DoesNotExist:
         messages.warning(request,'Quiz Does not exists')
         raise Http404()
     questions=quiz.all_question
-    context={'quiz':quiz,'questions':questions}
+    context={'quiz':quiz,'questions':questions,'shared':True}
     if request.method=='POST':
-        if len(request.POST)!=len(questions)+1:
+        if request.user.is_authenticated:
+            if quiz.user==request.user:
+                return redirect('quiz:quizzes')
+            return redirect('quiz:quizz',slug=quiz_name)
+        if len(request.POST)!=len(questions)+2:
             messages.warning(request, 'Answer all the questions')
-            return redirect('quiz:quizz',slug)
+            return redirect('quiz:share-view',id=id,quiz_name=quiz_name,username=username)
+        
+        name=request.POST.get('name','')
         counter=0
         for i in questions:
             if i.answer==int(request.POST[i.question]):
                 counter+=1
             else:
                 pass
+        AnonymousUsersData(user=name,score=counter,quiz=quiz)
         messages.success(request, f'Your Score was {counter}')
-        # return redirect('quiz:quizzes')
     return render(request,'quiz/quiz.html',context=context)
 @login_required
 def add_quiz_form(request): 
