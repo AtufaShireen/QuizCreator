@@ -15,7 +15,7 @@ class UUIDTaggedItem(GenericUUIDTaggedItemBase, TaggedItemBase):
         verbose_name_plural = _("Tags")
 
 class Quizzer(models.Model):
-    id=models.UUIDField(primary_key = True,default = uuid.uuid4,editable = False)
+    uuid=models.UUIDField(default = uuid.uuid4,editable = False)
     user = models.ForeignKey(User, on_delete=models.CASCADE,related_name='user_quiz')
     title = models.CharField(max_length=250, null=False,unique=True)
     slug = models.SlugField(null=True, blank=True)

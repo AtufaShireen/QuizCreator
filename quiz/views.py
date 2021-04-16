@@ -19,7 +19,7 @@ def error_404(request,exception):
 def ShareQuizzView(request,id,username,quiz_name): # modify to check 404 and private
     try:
         
-        quiz=Quizzer.objects.get(slug=quiz_name,user__username=username,id=id)
+        quiz=Quizzer.objects.get(slug=quiz_name,user__username=username,uuid=id)
         if request.user!=quiz.user and quiz.private==True:
             raise Http404()
     except Quizzer.DoesNotExist:
@@ -34,7 +34,7 @@ def ShareQuizzView(request,id,username,quiz_name): # modify to check 404 and pri
             return redirect('quiz:quizz',slug=quiz_name)
         if len(request.POST)!=len(questions)+2:
             messages.warning(request, 'Answer all the questions')
-            return redirect('quiz:share-view',id=id,quiz_name=quiz_name,username=username)
+            return redirect('quiz:share-view',uuid=id,quiz_name=quiz_name,username=username)
         
         name=request.POST.get('name','')
         counter=0
@@ -46,6 +46,7 @@ def ShareQuizzView(request,id,username,quiz_name): # modify to check 404 and pri
         AnonymousUsersData(user=name,score=counter,quiz=quiz)
         messages.success(request, f'Your Score was {counter}')
     return render(request,'quiz/quiz.html',context=context)
+
 @login_required
 def add_quiz_form(request): 
     quiz_form=QuizForm(request.POST or None,request.FILES or None)
