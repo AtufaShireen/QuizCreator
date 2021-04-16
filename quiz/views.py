@@ -151,6 +151,7 @@ class QuizzesApiView(ListAPIView):
     queryset = Quizzer.objects.all()
 
 class UserQuizzesApiView(APIView):
+    permission_classes = [IsAuthenticated]
     def get(self, request, format=None, **kwargs):    
         private=Quizzer.objects.filter(Q(private=True),Q(user=request.user))
         public=Quizzer.objects.filter(Q(private=False),Q(user=request.user))
@@ -174,6 +175,7 @@ class UserQuizzesApiView(APIView):
             'Public Quizzes':pub_serializer.data,
             })
 class UserProfileApiView(APIView):
+    permission_classes = [IsAuthenticated]
     def get(self, request, format=None, **kwargs):
         user=kwargs.pop('username')
         try:
