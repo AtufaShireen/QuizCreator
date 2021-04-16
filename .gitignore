@@ -8,6 +8,5 @@ db.sqlite3
 .idea
 .vscode
 scraping.py
-media/
 testing.html
 htmlcov/
