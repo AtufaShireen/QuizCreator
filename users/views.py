@@ -17,7 +17,7 @@ def register(request):
             form.save()
             username = form.cleaned_data.get('username')
             messages.success(request, f'Welcome {username}')
-            return redirect('profile')  # change to blog-home
+            return redirect('profile')  
     else:
         form = UserRegsitrationForm()
     return render(request, 'users/register.html', {'form': form})
@@ -35,7 +35,7 @@ def profile(request,view_user=None):
         tags=x[0].user_tags()
         t=QuizScore.objects.filter(user=user)
         score=[(y.score,y.quiz) for y in t]
-        context = {'quiz_score':score,'public':x,'author':False,'user':user,'tags_used':tags} #,'quizzes':x
+        context = {'quiz_score':score,'public':x,'author':False,'user':user,'tags_used':tags}
         return render(request, 'users/profile.html', context)
 
     private = Quizzer.objects.filter(Q(user=request.user),Q(private=True))
@@ -61,10 +61,6 @@ def profile(request,view_user=None):
         p_form = ProfileUpdateForm(instance=request.user.profile)
         u_form = UserUpdateForm(instance=request.user)
 
-    context = {'u_form': u_form,'p_form': p_form,'quiz_score':score,'public':public,'private':private,'author':True,'tags_used':tags}
+    context = {'u_form': u_form,'p_form': p_form,'quiz_score':score,'public':public,
+                'private':private,'author':True,'tags_used':tags}
     return render(request, 'users/profile.html', context)
-
-# def viewprofile(request,username):
-
-#     context = {'quiz_score':score,'created_quizzes':x}
-#     return render(request, 'users/profile.html', context)
