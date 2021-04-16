@@ -66,7 +66,7 @@ WSGI_APPLICATION = 'quizzmaster.wsgi.application'
 
 DATABASES = {
     'default': {
-        'default': dj_database_url.config(
+        dj_database_url.config(
         default=config('DATABASE_URL')
     )
     }
