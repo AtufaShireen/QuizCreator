@@ -112,7 +112,7 @@ def QuizzView(request,slug): # modify to check 404 and private
         counter=0
         for i in questions:
             if i.answer==int(request.POST[i.question]):
-                counter+=1
+                counter+=int(request.POST[i.points])
             else:
                 pass
         try:
@@ -135,7 +135,7 @@ def Quizzes(request):
             ats=QuizScore.objects.filter(user=request.user).values_list('quiz_id') # to remove attempted quizzes
             query=Quizzer.objects.filter(Q(private=False)&~Q(user=request.user)&~Q(id__in=ats)) 
         except:
-            x= Quizzer.objects.prefetch_related('score_quiz').filter(user=request.user)
+            # x= Quizzer.objects.prefetch_related('score_quiz').filter(user=request.user)
             query=Quizzer.objects.filter(Q(private=False)&~Q(user=request.user)) 
         
 

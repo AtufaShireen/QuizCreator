@@ -2,7 +2,7 @@ from django.db import models
 from django.contrib.auth.models import User
 from PIL import Image
 from django.template.defaultfilters import slugify
-from django.core.validators import MaxValueValidator, MinValueValidator
+from django.core.exceptions import ValidationError
 from django.utils.translation import ugettext_lazy as _
 from taggit.managers import TaggableManager
 from taggit.models import GenericUUIDTaggedItemBase, TaggedItemBase
@@ -74,21 +74,26 @@ class AnonymousUsersData(models.Model):
     user=models.CharField(max_length=25)
     quiz=models.ForeignKey(Quizzer,on_delete=models.CASCADE)
     score=models.IntegerField(default=0)
+
+def validate_ans(value):
+    if value<1 or value>4:
+        raise ValidationError(_('Value must be between 1 and 4'))
 class Questions(models.Model):
     quizz = models.ForeignKey('Quizzer',on_delete=models.CASCADE,related_name='quizz_question')
-    slug = models.SlugField(null=True, blank=True)
-    question = models.CharField(max_length=1024, default='')
+    slug = models.SlugField(null=True, blank=True,max_length=60)
+    question = models.TextField(default='')
     option_1=models.CharField(max_length=1024, default='')
     option_2=models.CharField(max_length=1024, default='')
     option_3=models.CharField(max_length=1024, default='')
     option_4=models.CharField(max_length=1024, default='')
-    answer=models.PositiveIntegerField(validators=[MinValueValidator(1), MaxValueValidator(4)],default=1,verbose_name='correct option')
+    points=models.PositiveIntegerField(default=1,verbose_name='points')
+    answer=models.PositiveIntegerField(validators=[validate_ans],default=1,verbose_name='correct option')
 
     def __str__(self):
         return f'{self.question}'
 
     def save(self, *args, **kwargs):
-        self.slug = slugify(self.question)
+        self.slug = slugify(self.question[60])
 
         super(Questions, self).save(*args, **kwargs)
 
@@ -100,4 +105,4 @@ class QuizScore(models.Model):
     def quizzie_score(self): # title of the score
         return (self.quiz.title) # ,self.score
     def __str__(self):
-        return f"{self.user}'s score{self.score}"
+        return f"{self.user}'s score{self.score} in {self.quiz.title}"
