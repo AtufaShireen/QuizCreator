@@ -93,7 +93,7 @@ class Questions(models.Model):
         return f'{self.question}'
 
     def save(self, *args, **kwargs):
-        self.slug = slugify(self.question[60])
+        self.slug = slugify(self.question[:50])
 
         super(Questions, self).save(*args, **kwargs)
 

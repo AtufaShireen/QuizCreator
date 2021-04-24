@@ -16,7 +16,7 @@ class RequiredFormSet(BaseInlineFormSet): # not required for update form
                 }])
         super().clean()
             
-QuestionsFormset = inlineformset_factory(Quizzer,Questions,fields=['question','option_1','option_2','option_3','option_4','answer'],extra=1,formset=RequiredFormSet) # 
+QuestionsFormset = inlineformset_factory(Quizzer,Questions,fields=['question','option_1','option_2','option_3','option_4','points','answer'],extra=1,formset=RequiredFormSet) # 
 
 class QuizForm(ModelForm):
     class Meta:

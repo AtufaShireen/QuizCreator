@@ -40,9 +40,8 @@
                             herer<li>{{i}}</li>
                           {%endfor%}
                         </ul>
-                {%for error in form.errors%}
-                    here{{error}}
-                {%endfor%}
+                    {{form.errors}}
+            
                 <div class="row spacer">
                     <div class="col-2">
                         
@@ -182,9 +181,8 @@
                 </div>
                 <br>
                 {{ quest_form.management_form }}
-                {% for hidden in quest_form.hidden_fields %}
-                    herer{{ hidden }}
-                {% endfor %}
+                    {{ quest_form.hidden_fields }}
+                
                 <div id="items-form-container">
                   <ul>
                   {%for i in quest_form.non_form_errors%}
@@ -192,7 +190,7 @@
                           {%endfor%}
                         </ul>
                     {% for form in quest_form %}
-                        hererer{{form.id}}
+                        {{form.id}}
                     <div class="form-row">
                         {{form.errors}}
                         <div class="col-2">
@@ -240,6 +238,14 @@
                             <div class="col-4">
                                 <div class="input-group">
                                     {{form.option_4}}
+                                </div>
+                            </div>
+                            <div class="col-2">
+                                <label>{{form.points.label}}</label>
+                            </div>
+                            <div class="col-4">
+                                <div class="input-group">
+                                    {{form.points}}
                                 </div>
                             </div>
                             <div class="col-2">
