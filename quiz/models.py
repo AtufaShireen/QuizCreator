@@ -8,8 +8,6 @@ from taggit.managers import TaggableManager
 from taggit.models import GenericUUIDTaggedItemBase, TaggedItemBase
 import uuid
 
-
-# over herer-------
 class RangeField(models.IntegerField):
     description = _("Integer field with range")
     def __init__(self,min_val,max_val,*args,**kwargs): 
@@ -41,14 +39,6 @@ class RangeField(models.IntegerField):
             return self.db_type(connection)
         else:
             return models.IntegerField().db_type(connection=connection)
-
-    # def get_internal_type(self):
-    #     return "RangeField"
-
-
-class TestNeewfield(models.Model):
-    poitrange=RangeField(min_val=5,max_val=20)
-
 
 class UUIDTaggedItem(GenericUUIDTaggedItemBase, TaggedItemBase):
     class Meta:
