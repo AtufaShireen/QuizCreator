@@ -1,5 +1,5 @@
 from django.contrib import admin
-from .models import Questions,Quizzer,AnonymousUsersData,QuizScore
+from .models import Questions,Quizzer,AnonymousUsersData,QuizScore,TestNeewfield
 
 
 class QuizAmin(admin.ModelAdmin):
@@ -13,3 +13,4 @@ admin.site.register(Quizzer, QuizAmin)
 admin.site.register(Questions, QuesAmin)
 admin.site.register(AnonymousUsersData) 
 admin.site.register(QuizScore) 
+admin.site.register(TestNeewfield)

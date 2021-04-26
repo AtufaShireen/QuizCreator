@@ -118,10 +118,10 @@
                       </button>
                     </div>
                     <div class="modal-body">
-                        Shareable link for your Quiz-
+                        copy the link for your Quiz and share-
                         <br>
-                        <a href="{%url 'quiz:share-view' q.user.username q.slug q.id%}" style="word-wrap: break-word;">
-                            https://Quizzer.com/quiz/shared/{{q.user.username}}/{{q.slug}}/{{q.id}}
+                        <a href="{%url 'quiz:share-view' q.user.username q.slug q.uuid%}" style="word-wrap: break-word;">
+                            https://Quizzer.com/quiz/shared/{{q.user.username}}/{{q.slug}}/{{q.uuid}}
                     </div>
                   </div>
                 </div>
