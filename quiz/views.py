@@ -66,7 +66,7 @@ def add_quiz_form(request):
     return render(request, 'quiz/create-quiz.html', {'quest_form': ques_fromset,'quiz_form':quiz_form}) #create-quiz
 
 @login_required
-def edit_quiz_form(request, quiz_tit=None):
+def edit_quiz_form(request, quiz_tit):
     try:
         inst=Quizzer.objects.get(slug=quiz_tit)
         if inst.user!=request.user:
@@ -97,7 +97,19 @@ def edit_quiz_form(request, quiz_tit=None):
 @login_required
 def QuizzView(request,slug): # modify to check 404 and private
     try:
+        user=request.user
         quiz=Quizzer.objects.get(slug=slug)
+        if quiz.reattempt==False:
+            print('hererer')
+            score=QuizScore.objects.get(user=user,quiz=quiz)
+            print('djfxfigjfoigj',score)
+            if QuizScore.DoesNotExist or score==None: # continur gerer
+                print('sdfjoi')
+                pass
+            else:
+                print('spdfljk')
+                messages.warning(request,'No attempts left!')
+                return redirect('quiz:quizzes')
         if request.user!=quiz.user and quiz.private==True:
             raise Http404()
     except Quizzer.DoesNotExist:
@@ -111,8 +123,12 @@ def QuizzView(request,slug): # modify to check 404 and private
             return redirect('quiz:quizz',slug)
         counter=0
         for i in questions:
+
+            print('hererer',i.answer)
+            print(request.POST[i.question])
+            print(i.points)
             if i.answer==int(request.POST[i.question]):
-                counter+=int(request.POST[i.points])
+                counter+=i.points
             else:
                 pass
         try:

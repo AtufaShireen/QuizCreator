@@ -37,10 +37,10 @@
                     {{ hidden }}
                 {% endfor %}
                 {%for i in quiz_form.non_field_errors%}
-                            herer<li>{{i}}</li>
+                            <li>{{i}}</li>
                           {%endfor%}
                         </ul>
-                    {{form.errors}}
+                    {{quiz_form.errors}}
             
                 <div class="row spacer">
                     <div class="col-2">

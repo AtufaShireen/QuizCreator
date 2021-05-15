@@ -25,7 +25,7 @@
     {%for i in questions%}
     <div class="quiz-form__quiz">
       <p class="quiz-form__question">
-        {{forloop.counter}}. {{i.question}}
+        {{forloop.counter}}. {{i.question}}<span><small> [{{i.points}} Point{{i.points|pluralize}}]</small></span>
 
       </p>
       <label class="quiz-form__ans" for="q1_{{i.id}}">

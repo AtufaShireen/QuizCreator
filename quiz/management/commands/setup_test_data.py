@@ -22,29 +22,38 @@ class Command(BaseCommand):
 
         
         # Create all the users
-        users = []
-        for _ in range(NUM_USERS):
-            users.append(UserFactory())
+        # users = []
+        # for _ in range(NUM_USERS):
+        #     users.append(UserFactory())
         
-        # add questions
-        quests=[]
-        for _ in range(NUM_QUES):
-            ques=QuestionFactory()
-            quests.append(ques)
-        q = list(zip(*[iter(quests)]*4) )# spilt questions into chunks of 4s
         
         #add quizzes
-        quizzies=[]
-        for i in range(NUM_QUIZ):
-            people=random.choice(users)
-            QuizzerFactory(user=people)
+        # quizzies=[]
+        # for i in range(NUM_QUIZ):
+        #     people=random.choice(users)
+        #     QuizzerFactory(user=people)
             
-            quiz=QuizzerFactory(user=people)
-            quiz.quizz_question.add(*q[i])
-            quizzies.append(quiz)
+        #     quiz=QuizzerFactory(user=people)
+        #     quiz.quizz_question.add(*q[i])
+        #     quizzies.append(quiz)
         
         #adding random scores
+        score_quiz=[]
         for _ in range(NUM_QUIZ_SCORE):
-            user=random.choice(users)
-            quiz=random.choice(quizzies)
-            QuizScoreFactory(user=user,quiz=quiz,score=random.randint(1,4))
+            # user=random.choice(users)
+            # quiz=random.choice(quizzies)
+            q=QuizScoreFactory()
+            # quests=[]
+            for _ in range(7):
+                QuestionFactory(quizz=q.quiz)
+                # quests.append(ques)
+            # q.quiz.quizz_question.set(quests)
+            # score_quiz.append(q.quiz)#user=user,quiz=quiz,score=random.randint(1,4)
+        # for i in quizzies:
+        #     if i.question_count<1:
+        #         i.delete()
+        # add questions
+        # quests=[]
+        # for _ in range(NUM_QUES):
+            
+        # q = list(zip(*[iter(quests)]*4) )# spilt questions into chunks of 4s

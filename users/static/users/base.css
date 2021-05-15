@@ -4,6 +4,29 @@ height:100%;
 body{
 min-height:100%;
 }
+.github-corner svg{
+	position:absolute;
+	right:0;
+	top:0;
+	mix-blend-mode:darken;
+	color:#eeeeee;
+	fill:#353535;
+	clip-path: polygon(0 0, 100% 0, 100% 100%);
+}
+.github-corner:hover .octo-arm{
+	animation:octocat-wave .56s;
+}
+@keyframes octocat-wave{
+	0%, 100%{
+		transform:rotate(0);
+	}
+	20%, 60%{
+		transform:rotate(-20deg);
+	}
+	40%, 80%{
+		transform:rotate(10deg);
+	}
+}
 nav
 {
     top: 6%;

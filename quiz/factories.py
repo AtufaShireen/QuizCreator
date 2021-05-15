@@ -27,7 +27,7 @@ class QuizzerFactory(DjangoModelFactory):
         variable_nb_words=True    
     )
     reattempt=factory.Faker("pybool")
-    private=factory.Faker("pybool")
+    private=False#factory.Faker("pybool")
     
 
 class QuestionFactory(DjangoModelFactory):
@@ -60,6 +60,7 @@ class QuestionFactory(DjangoModelFactory):
         variable_nb_words=True    
     )
     answer=FuzzyInteger(1,4)
+    points=FuzzyInteger(1,10)
 
 
 class QuizScoreFactory(DjangoModelFactory):
