@@ -18,13 +18,13 @@ class QuizzerSerializer(serializers.ModelSerializer):
     attempted_by=serializers.CharField(source='attempters', read_only=True)
     class Meta:
         model = Quizzer
-        fields = ['title','n_questions','tags','attempted_by']
+        fields = ['title','n_questions','tags','attempted_by','reattempt','private']
         depth=1
        
 class QuestionSerializer(serializers.ModelSerializer):
     class Meta:
         model = Questions
-        fields = ['question','option_1','option_2','option_3','option_4','answer']
+        fields = ['question','option_1','option_2','option_3','option_4','answer','points']
 
 class UserAttemptedQuizes(serializers.ModelSerializer):
     title=serializers.CharField(source='quizzie_score', read_only=True)

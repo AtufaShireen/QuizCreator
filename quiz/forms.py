@@ -10,7 +10,7 @@ class RequiredFormSet(BaseInlineFormSet): # not required for update form
         
     def clean(self):
         if not any([form.has_changed() for form in self.forms]):
-            print('ooooooooooo')
+           
             raise ValidationError([{
                 'question':ValidationError(_('Add at least one Question'),code='required')
                 }])
@@ -26,5 +26,5 @@ class QuizForm(ModelForm):
     def clean(self):
         super().clean()
         tn=self.cleaned_data.get('tags',[])
-        if len(tn)!=3:
+        if len(tn)<=2:
             raise ValidationError(_('Please add upto 3 tags'),code='required')

@@ -57,7 +57,15 @@ a {
   text-decoration: none;
 }
 
-
+.heading{
+    display: flex;
+    flex-direction: column;
+    flex-wrap: wrap;
+    align-content: center;
+    align-items: flex-end;
+    justify-content: space-around;
+    margin-bottom: 25px;
+}
 .card:hover {
   transform: rotate(0);
 }

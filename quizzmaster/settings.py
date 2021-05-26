@@ -1,11 +1,21 @@
 from pathlib import Path
 from decouple import config
 import dj_database_url
+import cloudinary
+import cloudinary.uploader
+import cloudinary.api
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
 
-
+ADMINS = (
+    ('Atufa', 'anonymouslookingirl@gmail.com'),
+)
 SECRET_KEY = config('SECRET_KEY')
+cloudinary.config( 
+  cloud_name = "dzzpfmpgm", #"CLOUD_NAME", 
+  api_key = "696813483658762", #, #"CLOUD_API_KEY", 
+  api_secret = "AW1QvsfDRFWt2dYXaz-05twrI2M" #"CLOUD_API_SECRET" 
+)
 
 DEBUG = config('DEBUG', default=False, cast=bool)
 
@@ -26,12 +36,13 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     'taggit',
     'django_cleanup',
-    'widget_tweaks'
+    'widget_tweaks',
+    'cloudinary',
+    # 'cloudinary_storage',
 ]
 
 MIDDLEWARE = [
-    'whitenoise.middleware.WhiteNoiseMiddleware',
-    'whitenoise.middleware.WhiteNoiseMiddleware',
+    # 'whitenoise.middleware.WhiteNoiseMiddleware',
     'django.middleware.security.SecurityMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.middleware.common.CommonMiddleware',
@@ -108,16 +119,44 @@ USE_L10N = True
 USE_TZ = True
 
 
-STATIC_ROOT = str(BASE_DIR/ 'staticfiles')
+STATIC_ROOT = '' #str(BASE_DIR/ 'staticfiles')
 STATIC_URL = '/static/'
-MEDIA_ROOT = str(BASE_DIR/ 'media')  # create folder
-MEDIA_URL = '/media/'
+MEDIA_ROOT = ''#str(BASE_DIR/ 'media')  # create folder
+MEDIA_URL = ''#'/media/'
 TAGGIT_CASE_INSENSITIVE = True
 LOGIN_URL = 'login'
 LOGIN_REDIRECT_URL = 'quiz:quizzes'
+STATICFILES_FINDERS = (
+    'django.contrib.staticfiles.finders.FileSystemFinder',
+    'django.contrib.staticfiles.finders.AppDirectoriesFinder',
+    # 'django.contrib.staticfiles.finders.DefaultStorageFinder',
+)
 
 db_from_env = dj_database_url.config(conn_max_age=500)
 DATABASES['default'].update(db_from_env)
 
 #  Add configuration for static files storage using whitenoise
-STATICFILES_STORAGE = 'whitenoise.storage.CompressedManifestStaticFilesStorage'
+# STATICFILES_STORAGE = 'whitenoise.storage.CompressedManifestStaticFilesStorage'
+LOGGING = {
+    'version': 1,
+    'disable_existing_loggers': False,
+    'filters': {
+        'require_debug_false': {
+            '()': 'django.utils.log.RequireDebugFalse'
+        }
+    },
+    'handlers': {
+        'mail_admins': {
+            'level': 'ERROR',
+            'filters': ['require_debug_false'],
+            'class': 'django.utils.log.AdminEmailHandler'
+        }
+    },
+    'loggers': {
+        'django.request': {
+            'handlers': ['mail_admins'],
+            'level': 'ERROR',
+            'propagate': True,
+        },
+    }
+}

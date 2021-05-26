@@ -7,6 +7,7 @@ from django.utils.translation import ugettext_lazy as _
 from taggit.managers import TaggableManager
 from taggit.models import GenericUUIDTaggedItemBase, TaggedItemBase
 import uuid
+from cloudinary.models import CloudinaryField
 
 class RangeField(models.IntegerField):
     description = _("Integer field with range")
@@ -50,7 +51,7 @@ class Quizzer(models.Model):
     user = models.ForeignKey(User, on_delete=models.CASCADE,related_name='user_quiz')
     title = models.CharField(max_length=250, null=False,unique=True)
     slug = models.SlugField(null=True, blank=True)
-    bg_pic = models.ImageField(default='def.png', upload_to='quiz_pic')
+    bg_pic = CloudinaryField('bg_pic') # default='def.png', upload_to='quiz_pic'
     reattempt=models.BooleanField(default=True,verbose_name='Allow Reattempt')
     private=models.BooleanField(default=False,verbose_name='Make private')
     tags=TaggableManager(through=UUIDTaggedItem)

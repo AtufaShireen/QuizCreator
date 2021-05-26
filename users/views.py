@@ -2,13 +2,16 @@ from django.shortcuts import render, redirect
 from django.contrib import messages
 from .forms import ProfileUpdateForm, UserUpdateForm, UserRegsitrationForm
 from django.contrib.auth.decorators import login_required
-from quiz.models import Quizzer,QuizScore
+from quiz.models import Quizzer,QuizScore,AnonymousUsersData
 from django.contrib.auth.models import User
 from django.db.models import Q
 from django.contrib import messages
 from django.http import Http404
 
 def register(request):
+    '''
+    Register user with built in registration form
+    '''
     if request.user.is_authenticated:
         return redirect('quiz:quizzes')
     if request.method == 'POST':
@@ -25,6 +28,11 @@ def register(request):
 
 @login_required
 def profile(request,view_user=None):
+    '''
+    Allows users to update their name, bio, pic and created quizzes.
+    Provides user's public and attempted quizzes with score,
+    private as well for authors with a share option. 
+    '''
     if view_user is not None:
         try:
             user=User.objects.get(username=view_user)
@@ -32,6 +40,8 @@ def profile(request,view_user=None):
             messages.warning(request, f'User Doesnot Exists')
             raise Http404()        
         x = Quizzer.objects.filter(Q(user__username=view_user),Q(private=False))
+        if len(x)==0:
+            return render(request, 'users/profile.html', {'author':False,'user':user})
         tags=x[0].user_tags()
         t=QuizScore.objects.filter(user=user)
         score=[(y.score,y.quiz) for y in t]
@@ -39,6 +49,7 @@ def profile(request,view_user=None):
         return render(request, 'users/profile.html', context)
 
     private = Quizzer.objects.filter(Q(user=request.user),Q(private=True))
+    shared=AnonymousUsersData.objects.filter(quiz__user=request.user)
     public = Quizzer.objects.filter(Q(user=request.user),Q(private=False))
     try:
         tags=public[0].user_tags()
@@ -62,5 +73,5 @@ def profile(request,view_user=None):
         u_form = UserUpdateForm(instance=request.user)
 
     context = {'u_form': u_form,'p_form': p_form,'quiz_score':score,'public':public,
-                'private':private,'author':True,'tags_used':tags}
+                'private':private,'author':True,'tags_used':tags,'shared':shared}
     return render(request, 'users/profile.html', context)

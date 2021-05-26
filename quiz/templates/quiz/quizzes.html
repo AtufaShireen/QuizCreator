@@ -10,7 +10,10 @@
 
 <section style="margin-bottom: 50px;">
     <div class="container">
-        <h2 class="text-center">---QuizMaster</h2>
+        <div class="heading">
+            <h2 class="text-center">---Quizzer,</h2><small>Quizzes on tech</small>
+        </div>
+
         <div class="col-md-12">
             <p>Select Your Quizzz____</p>
             <form method="get" action=".">
@@ -33,7 +36,8 @@
                         <div>
                             <h3>{{q.title}}</h3>
                             <div class="tags">
-                                <div class="tag">By <a href="{%url 'view-profile' q.user.username%}">{{q.user.username}}</a></div>
+                                <div class="tag">By <a
+                                        href="{%url 'view-profile' q.user.username%}">{{q.user.username}}</a></div>
                                 <br>
                                 <div class="tag">
                                     {%for i in q.tags.all%}

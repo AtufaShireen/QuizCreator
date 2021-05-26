@@ -2,7 +2,10 @@
 small {
   color: lightgray;
 }
-
+img:before {
+  content: ' ';
+  background-image: url('/static/users/default.jpg');
+}
 .btn {
   margin: 5px 5px 0px 2px;
   background-color: pink;

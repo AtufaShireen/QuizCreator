@@ -108,8 +108,8 @@
                         </div>
                         <div class="col-8">
                             <div class="input-group question">
-                                <input type="text" name="quizz_question-__prefix__-question" maxlength="1024"
-                                    id="id_quizz_question-__prefix__-question">
+                                <textarea name="quizz_question-__prefix__-question" maxlength="1024" cols="40" rows="10"
+                                    id="id_quizz_question-__prefix__-question"></textarea>
 
                             </div>
                         </div>
@@ -156,10 +156,21 @@
                             </div>
                             <div class="col-4">
                                 <div class="input-group">
-                                    <input type="number" name="quizz_question-__prefix__-answer" value="1" min="0"
+                                    <input type="number" name="quizz_question-__prefix__-answer" value="1" min="1"
                                         id="id_quizz_question-__prefix__-answer">
                                 </div>
                             </div>
+
+                            <div class="col-2">
+                                <label>Points</label>
+                            </div>
+                            <div class="col-4">
+                                <div class="input-group">
+                                    <input type="number" name="quizz_question-__prefix__-points" value="1" min="1" max="4"
+                                        id="id_quizz_question-__prefix__-points">
+                                </div>
+                            </div>
+
                             <div class="col-2">
                                 <label>Delete</label>
                             </div>

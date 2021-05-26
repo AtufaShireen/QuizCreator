@@ -20,7 +20,7 @@
     <div class="content" id="content">
 
         <h1 class='title'>{{user.username}}</h1>
-        <img src="{{user.profile.pic.url}}" alt="{{user.username}}" class="circle">
+        <img src="{{user.profile.pic.url}}" alt="{{user.username}}" class="circle" height="200px" width="150px">
         <div class="cop">
             <div class="content-card">
                 <br /> {{user.profile.bio}}
@@ -104,36 +104,38 @@
 
             <button type="button" class="btn" data-toggle="modal" data-target="#exampleModalCenter">
                 Share
-              </button>
-              
+            </button>
 
-              <div class="modal fade" id="exampleModalCenter" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
+
+            <div class="modal fade" id="exampleModalCenter" tabindex="-1" role="dialog"
+                aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
                 <div class="modal-dialog modal-dialog-centered" role="document">
-                  <div class="modal-content"  style="background-color: aquamarine;">
-                    <div class="modal-header">
-                      <h5 class="modal-title" id="exampleModalLongTitle">Share Your Quiz With Friends</h5>
-                      <small>    No registration required!</small>
-                      <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                        <span aria-hidden="true">&times;</span>
-                      </button>
+                    <div class="modal-content" style="background-color: aquamarine;">
+                        <div class="modal-header">
+                            <h5 class="modal-title" id="exampleModalLongTitle">Share Your Quiz With Friends</h5>
+                            <small> No registration required!</small>
+                            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                <span aria-hidden="true">&times;</span>
+                            </button>
+                        </div>
+                        <div class="modal-body">
+                            copy the link for your Quiz and share-
+                            <br>
+                            <a href="#"
+                                style="word-wrap: break-word;">
+                                {{request.get_host}}/quiz/shared/{{q.user.username}}/{{q.slug}}/{{q.uuid}}
+                        </div>
                     </div>
-                    <div class="modal-body">
-                        copy the link for your Quiz and share-
-                        <br>
-                        <a href="{%url 'quiz:share-view' q.user.username q.slug q.uuid%}" style="word-wrap: break-word;">
-                            https://Quizzer.com/quiz/shared/{{q.user.username}}/{{q.slug}}/{{q.uuid}}
-                    </div>
-                  </div>
                 </div>
-              </div>
+            </div>
             {%else%}
             <a href="{%url 'quiz:quizz' q.slug%}" class="update">Take Quiz</a>
             {%endif%}
-            <a class="card" style="&#45;&#45;bg-img: url({{q.bg_pic.url}})">
+            <div class="card" style="&#45;&#45;bg-img: url({{q.bg_pic.url}})">
                 <div>
                     <h3>{{q.title}}</h3>
                     <div class="tags">
-                        <div class="tag">By {{q.user.username}}</div>
+                        <div class="tag">By {{q.user.username}}</a></div>
                         <div class="tag">
                             {%for i in q.tags.all%}
                             {{i.name}}
@@ -141,7 +143,7 @@
                         </div>
                     </div>
                 </div>
-            </a>
+            </div>
         </div>
         {%endfor%}
     </section>
@@ -176,6 +178,35 @@
         {%endfor%}
     </section>
 </div>
+
+<div class="gradient-border">
+    <h2 class='ml-5'>Shared Quizzes</h2>
+    <section class="cards-wrapper">
+
+        {%for q in shared%}
+        <div class="card-grid-space">
+
+            {%if author%}
+            <a href="{%url 'quiz:update-quiz' q.slug%}" class="update">Update</a>
+            {%else%}
+            <a href="{%url 'quiz:quizz' q.slug%}" class="update">Take Quiz</a>
+            {%endif%}
+            <a class="card" style="&#45;&#45;bg-img: url({{q.bg_pic.url}})">
+                <div>
+                    <h3>{{q.title}}</h3>
+                    <div class="tags">
+                        <div class="tag">Attempted By {{q.user}}</div>
+                        <div class="tag">
+                            {{q.score}}
+                        </div>
+                    </div>
+                </div>
+            </a>
+        </div>
+        {%endfor%}
+    </section>
+</div>
+
 {%endif%}
 <div class="gradient-border">
     <h2 class='ml-5'>Attempted Quizzes</h2>
@@ -192,15 +223,16 @@
             {%endcomment%}
             {%endif%}
 
-            <a class="card" href="#" style="&#45;&#45;bg-img: url({{q.bg_pic.url}})">
+            <div class="card" href="#" style="&#45;&#45;bg-img: url({{q.bg_pic.url}})">
                 <div>
                     <h3>{{quiz.title}}</h3>
                     <div class="tags">
-                        <div class="tag">By {{quiz.user.username}}</div>
+                        <div class="tag">By<a href="{%url 'view-profile' quiz.user.username%}"> {{quiz.user.username}}</a>
+                        </div>
                         <div class="tag">Score was: {{score}}</div>
                     </div>
                 </div>
-            </a>
+            </div>
 
         </div>
         {%endfor%}

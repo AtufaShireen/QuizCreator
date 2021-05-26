@@ -14,9 +14,9 @@
 
     {%block css%}{%endblock css%}
     {%if title%}
-    <title>QuizzMaster-{{title}}</title>
+    <title>Quizzier-{{title}}</title>
     {%else%}
-    <title>QuizzMaster</title>
+    <title>Quizzier-Tech Quizzes</title>
     {%endif%}
 </head>
 <body>
@@ -24,7 +24,7 @@
     <a href="#" target="_blank"> <img src="{%static 'users/djangoreads.png'%}"></a>
 </section>
 <nav>
-    <a href="{%url 'quiz:quizzes'%}" class="nav-item">QuizzMaster</a>
+    <a href="{%url 'quiz:quizzes'%}" class="nav-item">Quizzier</a>
     {%if user.is_authenticated%}
     <a href="{%url 'quiz:create-quiz'%}" class="nav-item">Add Quiz</a>
     <a href="{%url 'profile'%}" class="nav-item">Profile</a>

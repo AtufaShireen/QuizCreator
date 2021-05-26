@@ -12,15 +12,20 @@ from django.db.models import Q
 from django.contrib.auth.decorators import login_required
 from rest_framework.permissions import IsAuthenticated,IsAdminUser
 from django.http import Http404
+
 def error_404(request,exception):
     data={}
     return render(request,'quiz/404.html', data)
 
-def ShareQuizzView(request,id,username,quiz_name): # modify to check 404 and private
+def ShareQuizzView(request,id,username,quiz_name): # tokens would be good.
+    '''
+    A shareable link for the user to share is generated
+    in (quiz/shared/<author_name>/<title_slug>/<uuid>/) form in the profiles page,
+    and anonymous users can attempt them (without registration).
+    '''
     try:
-        
         quiz=Quizzer.objects.get(slug=quiz_name,user__username=username,uuid=id)
-        if request.user!=quiz.user and quiz.private==True:
+        if request.user!=quiz.user : # and quiz.private==True
             raise Http404()
     except Quizzer.DoesNotExist:
         messages.warning(request,'Quiz Does not exists')
@@ -32,11 +37,11 @@ def ShareQuizzView(request,id,username,quiz_name): # modify to check 404 and pri
             if quiz.user==request.user:
                 return redirect('quiz:quizzes')
             return redirect('quiz:quizz',slug=quiz_name)
-        if len(request.POST)!=len(questions)+2:
+        if len(request.POST)!=len(questions)+2: # token and name
             messages.warning(request, 'Answer all the questions')
             return redirect('quiz:share-view',uuid=id,quiz_name=quiz_name,username=username)
         
-        name=request.POST.get('name','')
+        name=request.POST.get('name','anonyuser')
         counter=0
         for i in questions:
             if i.answer==int(request.POST[i.question]):
@@ -49,6 +54,9 @@ def ShareQuizzView(request,id,username,quiz_name): # modify to check 404 and pri
 
 @login_required
 def add_quiz_form(request): 
+    '''
+    Adds quizzes at least one is required, needs user to be logged in
+    '''
     quiz_form=QuizForm(request.POST or None,request.FILES or None)
     ques_fromset=QuestionsFormset(request.POST or None)
     if ques_fromset.is_valid() and quiz_form.is_valid():
@@ -67,6 +75,9 @@ def add_quiz_form(request):
 
 @login_required
 def edit_quiz_form(request, quiz_tit):
+    '''
+    formsets are used for editing the quizzes, allows owner to edit quizzes by their title
+    '''
     try:
         inst=Quizzer.objects.get(slug=quiz_tit)
         if inst.user!=request.user:
@@ -95,26 +106,33 @@ def edit_quiz_form(request, quiz_tit):
 
 
 @login_required
-def QuizzView(request,slug): # modify to check 404 and private
+def QuizzView(request,slug): 
+    '''
+    allows attempting public quizzes by the users,
+    redirects if reattempts are not allowed or quiz doesnot exists,
+    and updates or adds the score of the quiz to the user's profile data.
+    '''
     try:
         user=request.user
         quiz=Quizzer.objects.get(slug=slug)
-        if quiz.reattempt==False:
-            print('hererer')
-            score=QuizScore.objects.get(user=user,quiz=quiz)
-            print('djfxfigjfoigj',score)
-            if QuizScore.DoesNotExist or score==None: # continur gerer
-                print('sdfjoi')
-                pass
-            else:
-                print('spdfljk')
-                messages.warning(request,'No attempts left!')
+        if request.user!=quiz.user:
+            if quiz.private==True:
+                messages.warning(request,'No Such Quiz')
                 return redirect('quiz:quizzes')
-        if request.user!=quiz.user and quiz.private==True:
-            raise Http404()
+            elif quiz.reattempt==False:
+                try:
+                    score=QuizScore.objects.get(user=user,quiz=quiz)
+                    messages.warning(request,'No attempts left!')
+                    return redirect('quiz:quizzes')
+                except QuizScore.DoesNotExist:
+                    pass
+        else:
+            pass
+        
     except Quizzer.DoesNotExist:
         messages.warning(request,'Quiz Does not exists')
         raise Http404()
+
     questions=quiz.all_question
     context={'quiz':quiz,'questions':questions}
     if request.method=='POST':
@@ -146,6 +164,10 @@ def QuizzView(request,slug): # modify to check 404 and private
 #     return HttpResponse(f'Your Score Was..{score}')
 
 def Quizzes(request):
+    '''
+    Lists the quizzes which are public by others users,
+    and are not yet attempted by the user
+    '''
     if request.user.is_authenticated:
         try: 
             ats=QuizScore.objects.filter(user=request.user).values_list('quiz_id') # to remove attempted quizzes
@@ -191,26 +213,29 @@ class UserQuizzesApiView(APIView):
             'Private Quizzes':pri_serializer.data,
             'Public Quizzes':pub_serializer.data,
             })
+
 class UserProfileApiView(APIView):
+    '''
+    Provide user name to GET request
+    '''
     permission_classes = [IsAuthenticated]
     def get(self, request, format=None, **kwargs):
-        user=kwargs.pop('username')
+        user=request.data['username']
         try:
             user=User.objects.get(username=user)
         except User.DoesnotExists:
-            print('dgj')
             raise Http404
         attempted = QuizScore.objects.filter(user=user)
         attempt_serializer = UserAttemptedQuizes(attempted, many=True)
-        public=Quizzer.objects.filter(Q(private=False),Q(user=user))
-        pub_serializer = QuizzerSerializer(public, many=True)
-        try:    
-            if len(public)==0:
-                quizzes=private[0]
-            else:
-                quizzes=public[0]
+        try:   
+            public=Quizzer.objects.filter(Q(private=False),Q(user=user)) 
+            quizzes=public[0]
         except:
             quizzes=None
+            public=None
+        
+        pub_serializer = QuizzerSerializer(public, many=True)
+        
         
         prof_serializer=ProfileSerializer(quizzes)
         
@@ -221,10 +246,13 @@ class UserProfileApiView(APIView):
             })
 
 
-class QuizzApiView(APIView):
+class QuizzApiView(APIView): # modify as per FBV
+    '''
+    Provide slug of quiz title to GET request
+    '''
     permission_classes = [IsAuthenticated]
     def get(self, request, format=None, **kwargs):
-        quiz = get_object_or_404(Quizzer, slug__iexact=kwargs['slug'])  # case insensitive LIKE clause
+        quiz = get_object_or_404(Quizzer, slug__iexact=request.data['slug'])  # case insensitive LIKE clause
         questions = Questions.objects.filter(quizz=quiz)
         serializer = QuestionSerializer(questions, many=True)  # add related name to the models for working
         return Response(serializer.data)
