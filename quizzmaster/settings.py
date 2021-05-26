@@ -12,9 +12,9 @@ ADMINS = (
 )
 SECRET_KEY = config('SECRET_KEY')
 cloudinary.config( 
-  cloud_name = "dzzpfmpgm", #"CLOUD_NAME", 
-  api_key = "696813483658762", #, #"CLOUD_API_KEY", 
-  api_secret = "AW1QvsfDRFWt2dYXaz-05twrI2M" #"CLOUD_API_SECRET" 
+  cloud_name = config("CLOUD_NAME"),
+  api_key = config("CLOUD_API_KEY"),
+  api_secret = config("CLOUD_API_SECRET"),
 )
 
 DEBUG = config('DEBUG', default=False, cast=bool)
