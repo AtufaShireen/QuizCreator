@@ -119,7 +119,7 @@ USE_L10N = True
 USE_TZ = True
 
 
-STATIC_ROOT = '' #str(BASE_DIR/ 'staticfiles')
+STATIC_ROOT = str(BASE_DIR/ 'staticfiles') #
 STATIC_URL = '/static/'
 MEDIA_ROOT = ''#str(BASE_DIR/ 'media')  # create folder
 MEDIA_URL = ''#'/media/'
