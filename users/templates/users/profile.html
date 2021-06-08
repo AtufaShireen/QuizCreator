@@ -20,7 +20,12 @@
     <div class="content" id="content">
 
         <h1 class='title'>{{user.username}}</h1>
+        {%if user.profile.pic.url is none%}
+      
+        <img src="{%static 'users/default.jpg'%}" alt="{{user.username}}" class="circle" height="200px" width="150px">
+        {%else%}
         <img src="{{user.profile.pic.url}}" alt="{{user.username}}" class="circle" height="200px" width="150px">
+        {%endif%}
         <div class="cop">
             <div class="content-card">
                 <br /> {{user.profile.bio}}
