@@ -14,7 +14,8 @@ class UserFactory(DjangoModelFactory):
     username=factory.LazyAttribute(lambda a: a.naame)
 
 class QuizzerFactory(DjangoModelFactory):
-    model=Quizzer
+    class Meta:
+        model=Quizzer
     # class Params:
     #     tage=factory.Faker('word')
     
